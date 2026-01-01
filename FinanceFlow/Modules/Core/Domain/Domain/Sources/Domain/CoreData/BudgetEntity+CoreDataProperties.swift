@@ -19,8 +19,8 @@ extension BudgetEntity {
     }
 
     @NSManaged public var amount: Double
-    @NSManaged public var id: UUID?
-    @NSManaged public var startDate: Date?
+    @NSManaged public var id: UUID
+    @NSManaged public var startDate: Date
 
 }
 

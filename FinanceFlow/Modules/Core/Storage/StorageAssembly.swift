@@ -13,5 +13,9 @@ final class StorageAssembly: Assembly {
         container.register(IUserDefaultsStorage.self) { _ in
             UserDefaultsStorage() 
         }
+        
+        container.register(ICoreDataManager.self) { _ in
+            CoreDataManager()
+        }
     }
 }

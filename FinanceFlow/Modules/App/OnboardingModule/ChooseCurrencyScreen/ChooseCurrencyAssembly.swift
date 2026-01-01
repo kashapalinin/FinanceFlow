@@ -11,7 +11,7 @@ import Swinject
 final class ChooseCurrencyAssembly {
     func assemble(coordinator: OnboardingCoordinatorProtocol, resolver: Resolver) -> UIViewController {
         let vc = ChooseCurrencyViewController()
-        let presenter = ChooseCurrencyPresenter(service: resolver.resolve(IOnboardingService.self)!)
+        let presenter = ChooseCurrencyPresenter(service: resolver.resolve(ISettingsService.self)!)
         vc.presenter = presenter
         presenter.coordinator = coordinator
         presenter.view = vc

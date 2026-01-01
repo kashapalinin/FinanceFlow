@@ -13,5 +13,7 @@ public typealias TransactionEntityCoreDataClassSet = NSSet
 
 @objc(TransactionEntity)
 public class TransactionEntity: NSManagedObject {
-
+    public func toTransaction() -> Transaction {
+        Transaction(id: id, amount: amount, category: category, date: date, note: note, type: TransactionType(rawValue: type) ?? .INCOME)
+    }
 }

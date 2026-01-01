@@ -14,3 +14,6 @@ Package.resolved
 
 *.xcuserdatad/
 *.xccheckout
+*.xcuserstate
+FinanceFlow.xcodeproj/xcuserdata/pavelkalinin.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
+FinanceFlow.xcodeproj/xcuserdata/pavelkalinin.xcuserdatad/xcschemes/xcschememanagement.plist

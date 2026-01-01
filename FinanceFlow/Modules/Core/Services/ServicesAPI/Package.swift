@@ -16,14 +16,15 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/kashapalinin/CurrencyFormatter.git", from: "1.1.4")
+        .package(url: "https://github.com/kashapalinin/CurrencyFormatter.git", from: "1.1.4"),
+        .package(path: "/Users/pavelkalinin/Desktop/FinanceFlow/FinanceFlow/Modules/Core/Domain/Domain"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "ServicesAPI",
-            dependencies: ["CurrencyFormatter"]
+            dependencies: ["CurrencyFormatter", "Domain"]
         ),
         .testTarget(
             name: "ServicesAPITests",

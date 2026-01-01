@@ -57,7 +57,7 @@ class AccountAmountViewController: UIViewController {
             return
         }
         
-        presenter?.nextButtonTapped()
+        presenter?.nextButtonTapped(budgetSum: amount)
     }
     
     private func showErrorState(message: String) {

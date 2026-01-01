@@ -7,14 +7,14 @@
 import StorageAPI
 import CoreData
 
-final class CoreDataManager: ICoreDataManager {
-    let persistentContainer: NSPersistentContainer
+final public class CoreDataManager: ICoreDataManager {
+    private let persistentContainer: NSPersistentContainer
     
-    var viewContext: NSManagedObjectContext {
+    public var viewContext: NSManagedObjectContext {
         persistentContainer.viewContext
     }
     
-    init() {
+    public init() {
         persistentContainer = NSPersistentContainer(name: "FinanceFlow")
         persistentContainer.loadPersistentStores { _, error in
             if let error {
@@ -23,7 +23,7 @@ final class CoreDataManager: ICoreDataManager {
         }
     }
     
-    func saveContext() {
+    public func saveContext() {
         guard viewContext.hasChanges else { return }
         try? viewContext.save()
     }

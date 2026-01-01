@@ -13,5 +13,7 @@ public typealias BudgetEntityCoreDataClassSet = NSSet
 
 @objc(BudgetEntity)
 public class BudgetEntity: NSManagedObject {
-
+    public func toBudget() -> Budget {
+        return Budget(id: self.id, amount: self.amount, startDate: self.startDate)
+    }
 }

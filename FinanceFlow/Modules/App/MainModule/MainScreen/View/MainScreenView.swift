@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import DGCharts
 
-class MainView: UIView {
+class MainScreenView: UIView {
     // MARK: - Existing Properties
     private let backgroundFillView: UIView = {
         let view = UIView()
@@ -64,7 +64,7 @@ class MainView: UIView {
         return stack
     }()
 
-    // MARK: - New Properties
+    // MARK: - Chart Properties
     let statsContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
@@ -123,15 +123,30 @@ class MainView: UIView {
         return view
     }()
 
-    let pieChartView: UIView = {
-        let view = PieChartView()
-        return view
+    // Используем PieChartView из DGCharts
+    let pieChartView: PieChartView = {
+        let chart = PieChartView()
+        chart.holeColor = .clear
+        chart.transparentCircleColor = .clear
+        chart.holeRadiusPercent = 0.75
+        chart.drawHoleEnabled = true
+        chart.rotationEnabled = false
+        chart.highlightPerTapEnabled = false
+        chart.legend.enabled = false
+        chart.drawEntryLabelsEnabled = false
+        chart.noDataText = "Нет данных"
+        chart.noDataFont = .systemFont(ofSize: 14)
+        chart.noDataTextColor = .gray
+        return chart
     }()
 
-    let lineChartView: UIView = {
+    // Контейнер для горизонтальной полосовой диаграммы
+    let barChartContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         view.isHidden = true
+        view.layer.cornerRadius = 12
+        view.layer.masksToBounds = true
         return view
     }()
 
@@ -179,10 +194,15 @@ class MainView: UIView {
         collectionView.register(ExpenseCell.self, forCellWithReuseIdentifier: "ExpenseCell")
         return collectionView
     }()
-
-    private var isLineChartVisible = false
-    private var isIncomeSelected = false
-    private var currentPeriodIndex = 0
+    
+    var statsContainerHeightConstraint: Constraint?
+    
+    var isLineChartVisible = false
+    var isIncomeSelected = false
+    var currentPeriodIndex = 0
+    
+    private var barLayers: [CAShapeLayer] = []
+    private var currentBarData: [(value: Double, color: UIColor, label: String)] = []
 
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -192,6 +212,7 @@ class MainView: UIView {
         setupActions()
         setSelectedTab(false, animated: false)
         setSelectedPeriod(0, animated: false)
+        setupCharts()
     }
 
     required init?(coder: NSCoder) {
@@ -200,7 +221,7 @@ class MainView: UIView {
 
     // MARK: - Setup
     private func setupViews() {
-        backgroundColor = .systemBackground
+        backgroundColor = .background
 
         addSubview(backgroundFillView)
         addSubview(contentContainer)
@@ -223,13 +244,10 @@ class MainView: UIView {
         statsContainer.addSubview(periodTabStack)
         statsContainer.addSubview(periodUnderlineView)
         statsContainer.addSubview(pieChartView)
-        statsContainer.addSubview(lineChartView)
+        statsContainer.addSubview(barChartContainer)
         statsContainer.addSubview(chartCenterLabel)
         statsContainer.addSubview(chartAmountLabel)
         statsContainer.addSubview(addButton)
-
-        // Add chart visualization
-        setupCharts()
     }
 
     private func setupConstraints() {
@@ -244,7 +262,7 @@ class MainView: UIView {
         }
 
         budgetLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(16)
+            make.top.equalToSuperview().offset(8)
             make.centerX.equalToSuperview()
         }
 
@@ -254,7 +272,7 @@ class MainView: UIView {
         }
 
         tabStack.snp.makeConstraints { make in
-            make.top.equalTo(amountLabel.snp.bottom).offset(10)
+            make.top.equalTo(amountLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview().inset(24)
             make.height.equalTo(32)
         }
@@ -269,7 +287,7 @@ class MainView: UIView {
         statsContainer.snp.makeConstraints { make in
             make.top.equalTo(backgroundFillView.snp.bottom).offset(-25)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(300)
+            statsContainerHeightConstraint = make.height.equalTo(300).constraint
         }
 
         periodTabStack.snp.makeConstraints { make in
@@ -282,19 +300,19 @@ class MainView: UIView {
             make.top.equalTo(periodTabStack.snp.bottom).offset(2)
             make.leading.equalTo(dayButton.snp.leading)
             make.trailing.equalTo(dayButton.snp.trailing)
-            make.height.equalTo(4)
+            make.height.equalTo(2)
         }
 
         pieChartView.snp.makeConstraints { make in
-            make.top.equalTo(periodUnderlineView.snp.bottom).offset(32)
+            make.top.equalTo(periodUnderlineView.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(200)
         }
 
-        lineChartView.snp.makeConstraints { make in
-            make.top.equalTo(periodUnderlineView.snp.bottom).offset(32)
-            make.leading.trailing.equalToSuperview().inset(32)
-            make.height.equalTo(150)
+        barChartContainer.snp.makeConstraints { make in
+            make.top.equalTo(periodUnderlineView.snp.bottom).offset(15)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(24)
         }
 
         chartCenterLabel.snp.makeConstraints { make in
@@ -303,7 +321,7 @@ class MainView: UIView {
         }
 
         chartAmountLabel.snp.makeConstraints { make in
-            make.top.equalTo(lineChartView.snp.bottom).offset(16)
+            make.top.equalTo(barChartContainer.snp.bottom).offset(16)
             make.centerX.equalToSuperview()
         }
 
@@ -331,20 +349,155 @@ class MainView: UIView {
     }
 
     private func setupCharts() {
-        // Setup pie chart layers
-        let pieLayer = CAShapeLayer()
-        pieLayer.path = createPieChartPath().cgPath
-        pieLayer.fillColor = UIColor.clear.cgColor
-        pieLayer.strokeColor = UIColor.primary.cgColor
-        pieLayer.lineWidth = 20
-        pieChartView.layer.addSublayer(pieLayer)
+        let centerText = "₽12 500\nВсего"
+        pieChartView.centerAttributedText = NSAttributedString(
+            string: centerText,
+            attributes: [
+                .font: UIFont.systemFont(ofSize: 12, weight: .medium),
+                .foregroundColor: UIColor.gray
+            ]
+        )
+        
+        // Инициализируем тестовыми данными
+        setupTestData()
+    }
 
-        // Setup line chart
-        let lineLayer = CAShapeLayer()
-        lineLayer.fillColor = UIColor.clear.cgColor
-        lineLayer.strokeColor = UIColor.primary.cgColor
-        lineLayer.lineWidth = 3
-        lineChartView.layer.addSublayer(lineLayer)
+    // MARK: - Chart Data Setup
+    func setupTestData() {
+        setupTestPieChartData()
+        setupTestBarChartData()
+    }
+
+    func setupTestPieChartData() {
+        // Тестовые данные для круговой диаграммы
+        let entries = [
+            PieChartDataEntry(value: 2500, label: "Продукты"),
+            PieChartDataEntry(value: 850, label: "Транспорт"),
+            PieChartDataEntry(value: 1200, label: "Кафе"),
+            PieChartDataEntry(value: 3000, label: "Развлечения"),
+            PieChartDataEntry(value: 4800, label: "Одежда")
+        ]
+
+        let set = PieChartDataSet(entries: entries, label: "")
+        set.colors = [.systemBlue, .systemGreen, .systemOrange, .systemPurple, .systemRed]
+        set.drawValuesEnabled = false
+        set.sliceSpace = 2
+        set.selectionShift = 5
+
+        let data = PieChartData(dataSet: set)
+        pieChartView.data = data
+        
+        // Сохраняем данные для горизонтальной полосы
+        currentBarData = entries.enumerated().map { index, entry in
+            (value: entry.value, color: set.colors[index], label: entry.label ?? "")
+        }
+        
+        pieChartView.animate(yAxisDuration: 1.0, easingOption: .easeOutBack)
+    }
+
+    func setupTestBarChartData() {
+        createHorizontalBarChart(data: currentBarData)
+    }
+
+    // MARK: - Horizontal Bar Chart
+    private func createHorizontalBarChart(data: [(value: Double, color: UIColor, label: String)]) {
+        // Очищаем старые слои
+        barLayers.forEach { $0.removeFromSuperlayer() }
+        barLayers.removeAll()
+        
+        // Рассчитываем общую сумму
+        let total = data.reduce(0) { $0 + $1.value }
+        
+        // Размеры контейнера
+        let width = barChartContainer.bounds.width
+        let height = barChartContainer.bounds.height
+        
+        if total == 0 || width == 0 {
+            return
+        }
+        
+        var currentX: CGFloat = 0
+        
+        // Создаем сегменты
+        for (index, segment) in data.enumerated() {
+            let segmentWidth = CGFloat(segment.value / total) * width
+            
+            // Создаем слой для сегмента
+            let layer = CAShapeLayer()
+            let rect = CGRect(x: currentX, y: 0, width: segmentWidth, height: height)
+            let path = UIBezierPath(roundedRect: rect,
+                                  byRoundingCorners: getCornersForSegment(at: index, total: data.count),
+                                  cornerRadii: CGSize(width: 8, height: 8)).cgPath
+            
+            layer.path = path
+            layer.fillColor = segment.color.cgColor
+            layer.strokeColor = UIColor.white.cgColor
+            layer.lineWidth = 1
+            
+            // Добавляем анимацию
+            let animation = CABasicAnimation(keyPath: "path")
+            animation.fromValue = UIBezierPath(rect: CGRect(x: currentX, y: height/2, width: 0, height: 0)).cgPath
+            animation.toValue = path
+            animation.duration = 0.5
+            animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            layer.add(animation, forKey: "pathAnimation")
+            
+            barChartContainer.layer.addSublayer(layer)
+            barLayers.append(layer)
+            
+            currentX += segmentWidth
+        }
+    }
+    
+    private func getCornersForSegment(at index: Int, total: Int) -> UIRectCorner {
+        if total == 1 {
+            return [.allCorners]
+        }
+        
+        if index == 0 {
+            return [.topLeft, .bottomLeft]
+        } else if index == total - 1 {
+            return [.topRight, .bottomRight]
+        } else {
+            return []
+        }
+    }
+
+    // MARK: - Public Methods for Chart Updates
+    func updatePieChartData(entries: [PieChartDataEntry], colors: [UIColor]? = nil) {
+        let set = PieChartDataSet(entries: entries, label: "")
+        set.colors = colors ?? [.systemBlue, .systemGreen, .systemOrange, .systemPurple, .systemRed]
+        set.drawValuesEnabled = false
+        set.sliceSpace = 2
+        set.selectionShift = 5
+
+        let data = PieChartData(dataSet: set)
+        pieChartView.data = data
+        
+        // Сохраняем данные для горизонтальной полосы
+        currentBarData = entries.enumerated().map { index, entry in
+            (value: entry.value, color: set.colors[index], label: entry.label ?? "")
+        }
+        
+        // Обновляем горизонтальную полосу
+        createHorizontalBarChart(data: currentBarData)
+        
+        pieChartView.notifyDataSetChanged()
+        
+        // Обновляем центр диаграммы
+        let total = entries.reduce(0) { $0 + $1.value }
+        let centerText = "₽\(Int(total))\nВсего"
+        pieChartView.centerAttributedText = NSAttributedString(
+            string: centerText,
+            attributes: [
+                .font: UIFont.systemFont(ofSize: 12, weight: .medium),
+                .foregroundColor: UIColor.gray
+            ]
+        )
+    }
+
+    func updateChartForPeriod(_ periodIndex: Int) {
+        
     }
 
     // MARK: - Actions
@@ -431,6 +584,8 @@ class MainView: UIView {
             make.height.equalTo(2)
         }
 
+        updateChartForPeriod(index)
+
         if animated {
             UIView.animate(withDuration: 0.25) {
                 self.layoutIfNeeded()
@@ -445,15 +600,19 @@ class MainView: UIView {
         isLineChartVisible = true
         
         pieChartView.isHidden = true
-        lineChartView.isHidden = false
+        barChartContainer.isHidden = false
         chartCenterLabel.isHidden = true
-        chartAmountLabel.isHidden = false
+        
+        statsContainerHeightConstraint?.update(offset: 180)
+        UIView.animate(withDuration: 0.3) {
+            self.layoutIfNeeded()
+        }
+        createHorizontalBarChart(data: currentBarData)
         
         UIView.animate(withDuration: 0.3) {
             self.pieChartView.alpha = 0
-            self.lineChartView.alpha = 1
+            self.barChartContainer.alpha = 1
             self.chartCenterLabel.alpha = 0
-            self.chartAmountLabel.alpha = 1
         }
     }
 
@@ -461,39 +620,31 @@ class MainView: UIView {
         guard isLineChartVisible else { return }
         isLineChartVisible = false
         
-        lineChartView.isHidden = true
+        barChartContainer.isHidden = true
         pieChartView.isHidden = false
-        chartAmountLabel.isHidden = true
         chartCenterLabel.isHidden = false
-        
+        statsContainerHeightConstraint?.update(offset: 300)
         UIView.animate(withDuration: 0.3) {
+            self.layoutIfNeeded()
             self.pieChartView.alpha = 1
-            self.lineChartView.alpha = 0
+            self.barChartContainer.alpha = 0
             self.chartCenterLabel.alpha = 1
-            self.chartAmountLabel.alpha = 0
         }
     }
 
     private func calculateBannerTotalHeight() -> CGFloat {
         let window = UIApplication.shared.windows.first { $0.isKeyWindow }
         let statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
-        return 170 + statusBarHeight
-    }
-
-    private func createPieChartPath() -> UIBezierPath {
-        let center = CGPoint(x: 100, y: 100)
-        let radius: CGFloat = 80
-        let path = UIBezierPath(arcCenter: center,
-                               radius: radius,
-                               startAngle: -CGFloat.pi / 2,
-                               endAngle: 3 * CGFloat.pi / 2,
-                               clockwise: true)
-        return path
+        return 150 + statusBarHeight
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
         applyBottomRoundedCorners()
+        
+        if !barChartContainer.isHidden {
+            createHorizontalBarChart(data: currentBarData)
+        }
     }
 
     private func applyBottomRoundedCorners() {
@@ -508,6 +659,7 @@ class MainView: UIView {
         backgroundFillView.layer.mask = maskLayer
     }
 }
+
 
 // MARK: - Cell Class
 class ExpenseCell: UICollectionViewCell {

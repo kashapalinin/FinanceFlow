@@ -8,12 +8,14 @@ import UIKit
 import Swinject
 
 protocol MainModuleCoordinatorProtocol: Coordinator {
-
+    func showMoneyManagementScreen()
+    func showTransactionManageScreen()
 }
 
 final class MainModuleCoordinator: MainModuleCoordinatorProtocol {
     var navigationController: UINavigationController
     var flowCompletionHandler: CoordinatorHandler?
+    private var childCoordinators: [Coordinator] = []
     private let resolver: Resolver
 
     init(navigationController: UINavigationController, resolver: Resolver) {
@@ -27,8 +29,15 @@ final class MainModuleCoordinator: MainModuleCoordinatorProtocol {
     
     func showMoneyManagementScreen() {
         let assembly = resolver.resolve(MainAssembly.self)!
-        let vc = assembly.assemble()
+        let vc = assembly.assemble(coordinator: self, resolver: resolver)
         navigationController.setViewControllers([vc], animated: true)
+    }
+    
+    func showTransactionManageScreen() {
+        let coordinator = resolver.resolve(TransactionManageModuleCoordinatorProtocol.self, argument: navigationController)!
+        childCoordinators.append(coordinator)
+        
+        coordinator.start()
     }
 }
 

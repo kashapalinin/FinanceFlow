@@ -8,11 +8,17 @@ import Swinject
 import ServicesAPI
 import ServicesImpl
 import StorageAPI
-//
-//final class ServicesAssembly: Assembly {
-//    func assemble(container: Container) {
-//        container.register(IOnboardingService.self) { resolver in
-//            OnboardingService(userDefaultsStorage: resolver.resolve(IUserDefaultsStorage.self)!)
-//        }
-//    }
-//}
+
+final class ServicesAssembly: Assembly {
+    func assemble(container: Container) {
+        container.register(ISettingsService.self) { resolver in
+            SettingsService(
+                userDefaultsStorage: resolver.resolve(IUserDefaultsStorage.self)!
+            )
+        }
+        
+        container.register(IFinanceService.self) { resolver in
+            FinanceService(coreDataManager: resolver.resolve(ICoreDataManager.self)!)
+        }
+    }
+}

@@ -8,23 +8,29 @@ import ServicesAPI
 import CurrencyFormatter
 
 protocol AccountAmountPresenterProtocol: AnyObject {
-    func nextButtonTapped()
+    func nextButtonTapped(budgetSum: Double)
     func getDefaultCurrency() -> Currency?
 }
 
 final class AccountAmountPresenter: AccountAmountPresenterProtocol {
     weak var coordinator: OnboardingCoordinatorProtocol?
-    private let service: IOnboardingService
+    private let settingsService: ISettingsService
+    private let financeService: IFinanceService
     
-    init(service: IOnboardingService) {
-        self.service = service
+    init(
+        settingsService: ISettingsService,
+        financeService: IFinanceService
+    ) {
+        self.settingsService = settingsService
+        self.financeService = financeService
     }
     
-    func nextButtonTapped() {
+    func nextButtonTapped(budgetSum: Double) {
+        financeService.saveBudget(sum: budgetSum)
         coordinator?.goToNextModule()
     }
     
     func getDefaultCurrency() -> Currency? {
-        service.getDefaultCurrency()
+        settingsService.getDefaultCurrency()
     }
 }

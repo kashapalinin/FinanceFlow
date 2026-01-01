@@ -5,17 +5,14 @@
 //  Created by Павел Калинин on 27.12.2025.
 //
 import UIKit
+import DGCharts
 import CurrencyFormatter
+import SnapKit
 
-class MainViewController: UIViewController {
-    private lazy var mainView = MainView()
-    
+class MainScreenViewController: UIViewController {
+    private lazy var mainView = MainScreenView()
+    var presenter: MainScreenPresenterProtocol?
     private var expenses: [Expense] = [
-        Expense(category: "Продукты", amount: "-₽2 500", date: "Сегодня, 14:30", iconName: "cart.fill"),
-        Expense(category: "Транспорт", amount: "-₽850", date: "Сегодня, 09:15", iconName: "car.fill"),
-        Expense(category: "Кафе", amount: "-₽1 200", date: "Вчера, 19:45", iconName: "fork.knife"),
-        Expense(category: "Развлечения", amount: "-₽3 000", date: "26 дек", iconName: "film.fill"),
-        Expense(category: "Одежда", amount: "-₽4 800", date: "25 дек", iconName: "tshirt.fill")
     ]
     
     private var isShowingLineChart = false
@@ -26,54 +23,88 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleCollectionSwipe(_:)))
+        panGesture.delegate = self
+        
+        mainView.amountLabel.text = "\(presenter?.getCurrentBudget() ?? 0) " + (presenter?.getCurrencySymbol() ?? "")
+        mainView.collectionView.addGestureRecognizer(panGesture)
+        
         setupActions()
         setupCollectionView()
+        setupTestData()
     }
 
     private func setupActions() {
         mainView.expensesButton.addTarget(self, action: #selector(expensesTapped), for: .touchUpInside)
         mainView.incomeButton.addTarget(self, action: #selector(incomeTapped), for: .touchUpInside)
         mainView.addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
+        
+        // Добавляем действия для кнопок периода
+        mainView.dayButton.addTarget(self, action: #selector(periodButtonTapped(_:)), for: .touchUpInside)
+        mainView.weekButton.addTarget(self, action: #selector(periodButtonTapped(_:)), for: .touchUpInside)
+        mainView.monthButton.addTarget(self, action: #selector(periodButtonTapped(_:)), for: .touchUpInside)
+        mainView.yearButton.addTarget(self, action: #selector(periodButtonTapped(_:)), for: .touchUpInside)
     }
 
     private func setupCollectionView() {
         mainView.collectionView.delegate = self
         mainView.collectionView.dataSource = self
+    }
+
+    private func setupTestData() {
+        // Тестовые данные для круговой диаграммы
+        let pieEntries = [
+            PieChartDataEntry(value: 2500, label: "Продукты"),
+            PieChartDataEntry(value: 850, label: "Транспорт"),
+            PieChartDataEntry(value: 1200, label: "Кафе"),
+            PieChartDataEntry(value: 3000, label: "Развлечения"),
+            PieChartDataEntry(value: 4800, label: "Одежда")
+        ]
         
-        // Add scroll view delegate for chart transformation
-        mainView.collectionView.addObserver(self, forKeyPath: "contentOffset", options: .new, context: nil)
+        mainView.updatePieChartData(entries: pieEntries)
     }
 
     @objc private func expensesTapped() {
         mainView.setSelectedTab(false)
-        updateChartLabel(forExpenses: true)
+        updateChartForExpenses()
         expenses = getSampleExpenses(forType: .expense)
         mainView.collectionView.reloadData()
     }
 
     @objc private func incomeTapped() {
         mainView.setSelectedTab(true)
-        updateChartLabel(forExpenses: false)
+        updateChartForIncome()
         expenses = getSampleExpenses(forType: .income)
         mainView.collectionView.reloadData()
     }
 
     @objc private func addTapped() {
-        let alert = UIAlertController(title: "Добавить",
-                                    message: "Выберите тип операции",
-                                    preferredStyle: .actionSheet)
+        presenter?.showTransactionManageScreen()
+    }
+
+    @objc private func periodButtonTapped(_ sender: UIButton) {
+        let periods = [mainView.dayButton, mainView.weekButton, mainView.monthButton, mainView.yearButton]
+        guard let index = periods.firstIndex(of: sender) else { return }
         
-        alert.addAction(UIAlertAction(title: "Расход", style: .default, handler: { _ in
-            self.showAddExpenseScreen(isIncome: false)
-        }))
+        mainView.setSelectedPeriod(index)
+    }
+
+    private func updateChartForExpenses() {
+        // Обновляем круговую диаграмму для расходов
+        let currentPeriod = mainView.currentPeriodIndex
+        mainView.updateChartForPeriod(currentPeriod)
+    }
+
+    private func updateChartForIncome() {
+        // Обновляем круговую диаграмму для доходов
+        let entries = [
+            PieChartDataEntry(value: 50000, label: "Зарплата"),
+            PieChartDataEntry(value: 15000, label: "Фриланс"),
+            PieChartDataEntry(value: 3500, label: "Инвестиции"),
+            PieChartDataEntry(value: 10000, label: "Дивиденды")
+        ]
         
-        alert.addAction(UIAlertAction(title: "Доход", style: .default, handler: { _ in
-            self.showAddExpenseScreen(isIncome: true)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
-        
-        present(alert, animated: true)
+        mainView.updatePieChartData(entries: entries, colors: [.systemGreen, .systemTeal, .systemCyan, .systemMint])
     }
 
     private func showAddExpenseScreen(isIncome: Bool) {
@@ -104,6 +135,7 @@ class MainViewController: UIViewController {
             self.expenses.insert(newExpense, at: 0)
             self.mainView.collectionView.reloadData()
             self.updateTotalAmount()
+            self.updateChartsWithNewData(isIncome: isIncome)
         }))
         
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
@@ -128,26 +160,11 @@ class MainViewController: UIViewController {
         mainView.amountLabel.text = "₽\(Int(total))"
     }
 
-    private func updateChartLabel(forExpenses: Bool) {
-        if expenses.isEmpty {
-            mainView.chartCenterLabel.text = forExpenses ? "Нет расходов" : "Нет доходов"
-            mainView.chartAmountLabel.text = "₽0"
+    private func updateChartsWithNewData(isIncome: Bool) {
+        if isIncome {
+            updateChartForIncome()
         } else {
-            let total = expenses.reduce(0) { result, expense in
-                let amountString = expense.amount
-                    .replacingOccurrences(of: "+", with: "")
-                    .replacingOccurrences(of: "-", with: "")
-                    .replacingOccurrences(of: "₽", with: "")
-                    .replacingOccurrences(of: " ", with: "")
-                
-                if let amount = Double(amountString) {
-                    return result + amount
-                }
-                return result
-            }
-            
-            mainView.chartCenterLabel.text = forExpenses ? "Расходы" : "Доходы"
-            mainView.chartAmountLabel.text = "₽\(Int(total))"
+            updateChartForExpenses()
         }
     }
 
@@ -169,28 +186,31 @@ class MainViewController: UIViewController {
             ]
         }
     }
+    
+    @objc private func handleCollectionSwipe(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: mainView.collectionView)
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "contentOffset", let scrollView = object as? UIScrollView {
-            let offsetY = scrollView.contentOffset.y
-            
-            if offsetY > 50 && !isShowingLineChart {
+        switch gesture.state {
+
+        case .ended:
+            let offsetY = translation.y
+
+            if offsetY <= 50 && !isShowingLineChart {
                 mainView.showLineChart()
                 isShowingLineChart = true
-            } else if offsetY <= 50 && isShowingLineChart {
+            } else if offsetY > 50 && isShowingLineChart {
                 mainView.showPieChart()
                 isShowingLineChart = false
             }
-        }
-    }
 
-    deinit {
-        mainView.collectionView.removeObserver(self, forKeyPath: "contentOffset")
+        default:
+            break
+        }
     }
 }
 
 // MARK: - UICollectionView DataSource & Delegate
-extension MainViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension MainScreenViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return expenses.count
     }
@@ -225,6 +245,12 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
                                     preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
+    }
+}
+
+extension MainScreenViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 

@@ -2,9 +2,7 @@ import UIKit
 import SnapKit
 
 final class AccountAmountView: UIView {
-    
-    // MARK: - UI Elements
-    
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Введите сумму вашего бюджета"

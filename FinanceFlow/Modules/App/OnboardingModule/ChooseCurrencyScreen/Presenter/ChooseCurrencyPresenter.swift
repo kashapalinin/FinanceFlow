@@ -36,11 +36,11 @@ final class ChooseCurrencyPresenter: ChooseCurrencyPresenterProtocol {
     private var selectedCurrency: Currency?
     private var currencyFormatter: CBCurrencyFormatter
     private var isSearching = false
-    private let service: IOnboardingService
+    private let service: ISettingsService
     
     init(
         currencyFormatter: CBCurrencyFormatter = CBCurrencyFormatter(),
-        service: IOnboardingService
+        service: ISettingsService
     ) {
         self.currencyFormatter = currencyFormatter
         self.service = service
