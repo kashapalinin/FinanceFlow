@@ -28,7 +28,7 @@ final class TransactionManageModuleCoordinator: TransactionManageModuleCoordinat
     
     func showTransactionManageScreen() {
         let assembly = resolver.resolve(TransactionManageScreenAssembly.self)!
-        let vc = assembly.assemble()
+        let vc = assembly.assemble(coordinator: self, resolver: resolver)
         navigationController.pushViewController(vc, animated: true)
     }
 }

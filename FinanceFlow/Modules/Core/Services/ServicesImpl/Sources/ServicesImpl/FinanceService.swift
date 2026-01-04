@@ -8,8 +8,10 @@ import ServicesAPI
 import StorageAPI
 import Domain
 import Foundation
+import UIKit
 
 final public class FinanceService: IFinanceService {
+
     private var coreDataManager: ICoreDataManager
     
     public init(coreDataManager: ICoreDataManager) {
@@ -37,6 +39,31 @@ final public class FinanceService: IFinanceService {
         return (try? coreDataManager.viewContext.fetch(request).map{ $0.toTransaction() }) ?? []
     }
     
+    public func getCategories(for transactionType: TransactionType) -> [TransactionCategory] {
+        let request = CategoryEntity.fetchRequest()
+        
+        do {
+            let existing = try coreDataManager.viewContext.fetch(request)
+            if !existing.isEmpty {
+                return existing.compactMap { $0.toCategory() }.filter { $0.type == transactionType }
+            }
+        } catch {
+            print("Ошибка загрузки категорий: \(error)")
+            return []
+        }
+
+        createDefaultCategories()
+
+        return getCategories(for: transactionType)
+    }
+    
+    func createDefaultCategories() {
+        DefaultCategories.expenses.forEach {$0.toCategoryEntity(context: coreDataManager.viewContext)}
+        DefaultCategories.incomes.forEach {$0.toCategoryEntity(context: coreDataManager.viewContext)}
+        
+        coreDataManager.saveContext()
+    }
+    
     public func getCurrentBudget() -> Double {
         let budget = getInitialBudget()
         let transactions = getTransactions(for: DateInterval(start: .distantPast, end: .distantFuture))
@@ -53,5 +80,19 @@ final public class FinanceService: IFinanceService {
         }
         
         return result
+    }
+    
+    public func addTransaction(_ transaction: Transaction) {
+        let _ = transaction.toTransactionEntity(context: coreDataManager.viewContext)
+        coreDataManager.saveContext()
+    }
+    
+    public func getCategory(by id: UUID) -> TransactionCategory {
+        let request = CategoryEntity.fetchRequest()
+        request.predicate = NSPredicate(
+            format: "id == %@",
+            id as CVarArg
+        )
+        return ((try? coreDataManager.viewContext.fetch(request).map{ $0.toCategory() }) ?? []).first!
     }
 }

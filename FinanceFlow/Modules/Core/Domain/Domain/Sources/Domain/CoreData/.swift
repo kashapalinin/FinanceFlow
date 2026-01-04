@@ -2,7 +2,7 @@
 //  TransactionEntity+CoreDataProperties.swift
 //  FinanceFlow
 //
-//  Created by Павел Калинин on 04.01.2026.
+//  Created by Павел Калинин on 30.12.2025.
 //
 //
 
@@ -19,11 +19,11 @@ extension TransactionEntity {
     }
 
     @NSManaged public var amount: Double
+    @NSManaged public var category: String
     @NSManaged public var date: Date
     @NSManaged public var id: UUID
     @NSManaged public var note: String?
     @NSManaged public var type: Int16
-    @NSManaged public var categoryId: UUID
 
 }
 

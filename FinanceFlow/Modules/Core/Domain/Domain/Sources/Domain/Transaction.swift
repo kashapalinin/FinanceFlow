@@ -14,10 +14,19 @@ public enum TransactionType: Int16 {
 public struct Transaction {
     public var id: UUID
     public var amount: Double
-    public var category: String
+    public var categoryId: UUID
     public var date: Date
     public var note: String?
     public var type: TransactionType
+    
+    public init(id: UUID, amount: Double, categoryId: UUID, date: Date, note: String? = nil, type: TransactionType) {
+        self.id = id
+        self.amount = amount
+        self.categoryId = categoryId
+        self.date = date
+        self.note = note
+        self.type = type
+    }
 }
 
 extension Transaction {
@@ -25,7 +34,7 @@ extension Transaction {
         let entity = TransactionEntity(context: context)
         entity.id = id
         entity.amount = amount
-        entity.category = category
+        entity.categoryId = categoryId
         entity.date = date
         entity.note = note
         entity.type = type.rawValue

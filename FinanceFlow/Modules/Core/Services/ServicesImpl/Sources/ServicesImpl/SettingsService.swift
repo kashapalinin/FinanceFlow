@@ -31,4 +31,10 @@ public final class SettingsService: ISettingsService {
         let symbol = currencyFormatter.getCurrencySymbol(code: currency?.charCode ?? "")
         return symbol
     }
+    
+    public func getCurrencyCode() -> String {
+        let currencyFormatter = CBCurrencyFormatter()
+        let currency: Currency? = userDefaultsStorage.get(forKey: "defaultCurrency")
+        return currency?.charCode ?? ""
+    }
 }

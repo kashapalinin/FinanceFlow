@@ -61,7 +61,6 @@ class AccountAmountViewController: UIViewController {
     }
     
     private func showErrorState(message: String) {
-        // Можно показатьUIAlertController или просто анимацию ошибки
         UIView.animate(withDuration: 0.1) { [weak self] in
             self?.accountAmountView.transform = CGAffineTransform(translationX: 5, y: 0)
         } completion: { [weak self] _ in

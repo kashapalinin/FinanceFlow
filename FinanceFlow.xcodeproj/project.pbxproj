@@ -14,6 +14,7 @@
 		AAF301062EFFD073006827B7 /* ServicesImpl in Frameworks */ = {isa = PBXBuildFile; productRef = AAF301052EFFD073006827B7 /* ServicesImpl */; };
 		AAF301142F0178EF006827B7 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = AAF301132F0178EF006827B7 /* DGCharts */; };
 		AAF303BF2F03E851006827B7 /* CurrencyFormatter in Frameworks */ = {isa = PBXBuildFile; productRef = AAF303BE2F03E851006827B7 /* CurrencyFormatter */; };
+		AAF307782F066735006827B7 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = AAF307772F066735006827B7 /* FSCalendar */; };
 		AAF3FE0E2EFF1C0A006827B7 /* StorageAPI in Frameworks */ = {isa = PBXBuildFile; productRef = AAF3FE0D2EFF1C0A006827B7 /* StorageAPI */; };
 		AAF3FE102EFF1C0A006827B7 /* StorageImpl in Frameworks */ = {isa = PBXBuildFile; productRef = AAF3FE0F2EFF1C0A006827B7 /* StorageImpl */; };
 /* End PBXBuildFile section */
@@ -51,6 +52,7 @@
 				AAF3FE102EFF1C0A006827B7 /* StorageImpl in Frameworks */,
 				AAF301062EFFD073006827B7 /* ServicesImpl in Frameworks */,
 				AAD8DF332ED106A700084DE1 /* Swinject in Frameworks */,
+				AAF307782F066735006827B7 /* FSCalendar in Frameworks */,
 				AAF303BF2F03E851006827B7 /* CurrencyFormatter in Frameworks */,
 				AAF3FE0E2EFF1C0A006827B7 /* StorageAPI in Frameworks */,
 				AAF301042EFFD06F006827B7 /* ServicesAPI in Frameworks */,
@@ -116,6 +118,7 @@
 				AAF301052EFFD073006827B7 /* ServicesImpl */,
 				AAF301132F0178EF006827B7 /* DGCharts */,
 				AAF303BE2F03E851006827B7 /* CurrencyFormatter */,
+				AAF307772F066735006827B7 /* FSCalendar */,
 			);
 			productName = FinanceFlow;
 			productReference = AAD8DF162ED1040300084DE1 /* FinanceFlow.app */;
@@ -151,6 +154,7 @@
 				AAC31CE42EDD844E00C7869E /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				AAF301122F0178EF006827B7 /* XCRemoteSwiftPackageReference "Charts" */,
 				AAF303BD2F03E851006827B7 /* XCRemoteSwiftPackageReference "CurrencyFormatter" */,
+				AAF307762F066735006827B7 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AAD8DF172ED1040300084DE1 /* Products */;
@@ -438,6 +442,14 @@
 				minimumVersion = 1.1.3;
 			};
 		};
+		AAF307762F066735006827B7 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -473,6 +485,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AAF303BD2F03E851006827B7 /* XCRemoteSwiftPackageReference "CurrencyFormatter" */;
 			productName = CurrencyFormatter;
+		};
+		AAF307772F066735006827B7 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAF307762F066735006827B7 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
 		};
 		AAF3FE0D2EFF1C0A006827B7 /* StorageAPI */ = {
 			isa = XCSwiftPackageProductDependency;

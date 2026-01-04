@@ -8,6 +8,7 @@ public protocol ISettingsService {
     func setCurrency(_ currency: Currency)
     func getDefaultCurrency() -> Currency?
     func getCurrencySymbol() -> String
+    func getCurrencyCode() -> String
 }
 
 public protocol IFinanceService {
@@ -15,4 +16,8 @@ public protocol IFinanceService {
     func getInitialBudget() -> Double
     func getCurrentBudget() -> Double
     func getTransactions(for interval: DateInterval) -> [Transaction]
+    func getCategories(for transactionType: TransactionType) -> [TransactionCategory]
+    func getCategory(by id: UUID) -> TransactionCategory
+    
+    func addTransaction(_ transaction: Transaction)
 }

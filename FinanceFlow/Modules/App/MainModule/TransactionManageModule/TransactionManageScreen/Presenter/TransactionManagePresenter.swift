@@ -4,16 +4,54 @@
 //
 //  Created by Павел Калинин on 30.12.2025.
 //
-import UIKit
+import Foundation
+import CoreData
+import Domain
+import ServicesAPI
+import CurrencyFormatter
 
 protocol TransactionManagePresenterProtocol {
-    func backButtonTapped()
+    func getCategories(for type: TransactionType) -> [TransactionCategory]
+    func addTransaction(type: TransactionType, amount: Double, category: TransactionCategory, date: Date, comment: String?)
+    func closeScreen()
+    func getDefaultCurrency() -> String
 }
 
-final class TransactionManagePresenter: TransactionManagePresenterProtocol {
-    weak var view: UIViewController?
+class TransactionManagePresenter: TransactionManagePresenterProtocol {
+    weak var coordinator: TransactionManageModuleCoordinatorProtocol?
+
+    private let settingsService: ISettingsService
+    private let financeService: IFinanceService
     
-    func backButtonTapped() {
-        view?.navigationController?.popViewController(animated: true)
+    init(
+        settingsService: ISettingsService,
+        financeService: IFinanceService
+    ) {
+        self.settingsService = settingsService
+        self.financeService = financeService
+    }
+    
+    func getCategories(for type: TransactionType) -> [TransactionCategory] {
+        financeService.getCategories(for: type)
+    }
+    
+    func addTransaction(type: TransactionType, amount: Double, category: TransactionCategory, date: Date, comment: String? = nil) {
+        let transaction = Transaction(
+            id: UUID(),
+            amount: amount,
+            categoryId: category.id,
+            date: date,
+            note: comment,
+            type: type
+        )
+        financeService.addTransaction(transaction)
+    }
+    
+    func closeScreen() {
+        coordinator?.flowCompletionHandler?()
+    }
+    
+    func getDefaultCurrency() -> String {
+        settingsService.getCurrencyCode()
     }
 }

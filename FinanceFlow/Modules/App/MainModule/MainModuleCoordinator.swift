@@ -36,7 +36,10 @@ final class MainModuleCoordinator: MainModuleCoordinatorProtocol {
     func showTransactionManageScreen() {
         let coordinator = resolver.resolve(TransactionManageModuleCoordinatorProtocol.self, argument: navigationController)!
         childCoordinators.append(coordinator)
-        
+        coordinator.flowCompletionHandler = { [weak self] in
+            self?.navigationController.popViewController(animated: true)
+            self?.childCoordinators = []
+        }
         coordinator.start()
     }
 }
