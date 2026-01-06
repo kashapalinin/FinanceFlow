@@ -18,6 +18,8 @@ public protocol IFinanceService {
     func getTransactions(for interval: DateInterval) -> [Transaction]
     func getCategories(for transactionType: TransactionType) -> [TransactionCategory]
     func getCategory(by id: UUID) -> TransactionCategory
-    
+    func getTransaction(by id: UUID) -> Transaction
     func addTransaction(_ transaction: Transaction)
+    func deleteTransaction(by id: UUID)
+    func getTransactions(by categoryId: UUID, interval: DateInterval) -> [Transaction]
 }

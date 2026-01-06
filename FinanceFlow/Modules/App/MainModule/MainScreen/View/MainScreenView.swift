@@ -381,7 +381,7 @@ class MainScreenView: UIView {
         }
 
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(statsContainer.snp.bottom).offset(10)
+            make.top.equalTo(statsContainer.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -474,7 +474,6 @@ class MainScreenView: UIView {
         createHorizontalBarChart(currentBarData)
         pieChartView.notifyDataSetChanged()
         
-        // Обновляем центральный текст
         if entries.isEmpty {
             pieChartView.centerAttributedText = NSAttributedString(
                 string: isIncomeSelected ? "Нет доходов" : "Нет расходов",

@@ -27,4 +27,8 @@ final class TransactionsDataSource: NSObject, UICollectionViewDataSource {
     func setExpenses(expenses: [TransactionsByCategory]) {
         transactions = expenses
     }
+    
+    func getTransaction(at index: Int) -> TransactionsByCategory {
+        transactions[index]
+    }
 }

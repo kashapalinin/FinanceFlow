@@ -10,6 +10,9 @@ import Swinject
 protocol MainModuleCoordinatorProtocol: Coordinator {
     func showMoneyManagementScreen()
     func showTransactionManageScreen()
+    func showTransactionCategoryScreen(categoryId: UUID, interval: DateInterval)
+    func showTransactionScreen(transactionId: UUID)
+    func closeCurrentScreen()
 }
 
 final class MainModuleCoordinator: MainModuleCoordinatorProtocol {
@@ -41,6 +44,32 @@ final class MainModuleCoordinator: MainModuleCoordinatorProtocol {
             self?.childCoordinators = []
         }
         coordinator.start()
+    }
+    
+    func showTransactionCategoryScreen(categoryId: UUID, interval: DateInterval) {
+        let assembly = resolver.resolve(TransactionCategoryAssembly.self)!
+        let vc = assembly.assemble(
+            categoryId: categoryId,
+            interval: interval,
+            coordinator: self,
+            resolver: resolver
+        )
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func showTransactionScreen(transactionId: UUID) {
+        let assembly = resolver.resolve(TransactionAssembly.self)!
+        let vc = assembly.assemble(
+            transactionId: transactionId,
+            coordinator: self,
+            resolver: resolver
+        )
+        
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func closeCurrentScreen() {
+        navigationController.popViewController(animated: true)
     }
 }
 

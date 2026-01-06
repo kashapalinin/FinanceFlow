@@ -11,4 +11,5 @@ struct TransactionsByCategory {
     let id = UUID()
     let category: TransactionCategory
     let amount: Double
+    let transactions: [Transaction]
 }

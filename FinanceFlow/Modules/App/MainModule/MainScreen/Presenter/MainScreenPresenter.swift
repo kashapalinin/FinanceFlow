@@ -14,6 +14,7 @@ protocol MainScreenPresenterProtocol {
     func getCurrentBudget() -> Double
     func formTransactionsByCategories(type: TransactionType, for interval: DateInterval) -> [TransactionsByCategory]
     func getCategory(by id: UUID) -> TransactionCategory
+    func openTransactionsCategoryScreen(categoryId: UUID, interval: DateInterval)
 }
 
 final class MainScreenPresenter: MainScreenPresenterProtocol {
@@ -59,9 +60,14 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
             
             return TransactionsByCategory(
                 category: getCategory(by: category),
-                amount: totalAmount
+                amount: totalAmount,
+                transactions: categoryTransactions
             )
         }
-        .sorted { $0.category.name < $1.category.name }
+        .sorted { $0.amount > $1.amount }
+    }
+    
+    func openTransactionsCategoryScreen(categoryId: UUID, interval: DateInterval) {
+        coordinator?.showTransactionCategoryScreen(categoryId: categoryId, interval: interval)
     }
 }

@@ -105,7 +105,7 @@ class ExpenseCell: UICollectionViewCell {
     func configure(with expense: TransactionsByCategory) {
         iconContainer.backgroundColor = UIColor(hexData: expense.category.color)
         
-        categoryIcon.image = UIImage(data: expense.category.icon)
+        categoryIcon.image = UIImage(data: expense.category.icon)?.withRenderingMode(.alwaysTemplate)
         
         categoryLabel.text = expense.category.name
         amountLabel.text = "\(expense.amount)"

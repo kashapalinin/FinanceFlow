@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 
 final public class FinanceService: IFinanceService {
-
+    
     private var coreDataManager: ICoreDataManager
     
     public init(coreDataManager: ICoreDataManager) {
@@ -51,9 +51,9 @@ final public class FinanceService: IFinanceService {
             print("Ошибка загрузки категорий: \(error)")
             return []
         }
-
+        
         createDefaultCategories()
-
+        
         return getCategories(for: transactionType)
     }
     
@@ -94,5 +94,41 @@ final public class FinanceService: IFinanceService {
             id as CVarArg
         )
         return ((try? coreDataManager.viewContext.fetch(request).map{ $0.toCategory() }) ?? []).first!
+    }
+    
+    public func getTransactions(by categoryId: UUID, interval: DateInterval) -> [Transaction] {
+        let request = TransactionEntity.fetchRequest()
+        request.predicate = NSPredicate(
+            format: "date >= %@ AND date < %@ AND categoryId == %@",
+            interval.start as NSDate,
+            interval.end as NSDate,
+            categoryId as CVarArg
+        )
+        return (try? coreDataManager.viewContext.fetch(request).map{ $0.toTransaction() }) ?? []
+    }
+    
+    public func getTransaction(by id: UUID) -> Transaction {
+        let request = TransactionEntity.fetchRequest()
+        request.predicate = NSPredicate(
+            format: "id == %@",
+            id as CVarArg
+        )
+        return ((try? coreDataManager.viewContext.fetch(request).map { $0.toTransaction() }) ?? []).first!
+    }
+    
+    public func deleteTransaction(by id: UUID) {
+        let fetchRequest = TransactionEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        fetchRequest.fetchLimit = 1
+        
+        let results = try? coreDataManager.viewContext.fetch(fetchRequest)
+        
+        if let transactionToDelete = results?.first {
+            coreDataManager.viewContext.delete(transactionToDelete)
+            coreDataManager.saveContext()
+            print("Транзакция с ID \(id) удалена")
+        } else {
+            print("Транзакция с ID \(id) не найдена")
+        }
     }
 }

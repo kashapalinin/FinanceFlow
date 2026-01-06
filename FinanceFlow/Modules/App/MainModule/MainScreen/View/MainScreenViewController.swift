@@ -47,6 +47,11 @@ class MainScreenViewController: UIViewController {
         setupActions()
         setupCollectionView()
         updateDisplayedPeriod(for: currentRange)
+        
+        collectionDelegate.onCategoryTapped = { [weak self] category in
+            guard let self = self, let category = category else { return }
+            self.presenter?.openTransactionsCategoryScreen(categoryId: category.category.id, interval: self.currentRange)
+        }
     }
 
     private func setupActions() {

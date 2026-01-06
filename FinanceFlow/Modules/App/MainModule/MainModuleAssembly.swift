@@ -24,6 +24,14 @@ final class MainModuleAssembly: Assembly {
             TransactionManageScreenAssembly()
         }
         
+        container.register(TransactionCategoryAssembly.self) { _ in
+            TransactionCategoryAssembly()
+        }
+        
+        container.register(TransactionAssembly.self) { _ in
+            TransactionAssembly()
+        }
+        
         container.register(TransactionManageModuleCoordinatorProtocol.self) { (resolver: Resolver, nc: UINavigationController) in
             TransactionManageModuleCoordinator(
                 navigationController: nc,

@@ -13,13 +13,15 @@ final class DefaultCategories {
         .init(id: UUID(), name: "Транспорт", type: .EXPENSE, icon: UIImage(systemName: "bus")?.pngData() ?? Data(), color: UIColor.systemOrange.toHex()?.data(using: .utf8) ?? Data()),
         .init(id: UUID(), name: "Кафе", type: .EXPENSE, icon: UIImage(systemName: "cup.and.saucer")?.pngData() ?? Data(), color: UIColor.systemPink.toHex()?.data(using: .utf8) ?? Data()),
         .init(id: UUID(), name: "ЖКХ", type: .EXPENSE, icon: UIImage(systemName: "house")?.pngData() ?? Data(), color: UIColor.systemGreen.toHex()?.data(using: .utf8) ?? Data()),
-        .init(id: UUID(), name: "Развлечения", type: .EXPENSE, icon: UIImage(systemName: "gamecontroller")?.pngData() ?? Data(), color: UIColor.systemPurple.toHex()?.data(using: .utf8) ?? Data())
+        .init(id: UUID(), name: "Развлечения", type: .EXPENSE, icon: UIImage(systemName: "gamecontroller")?.pngData() ?? Data(), color: UIColor.systemPurple.toHex()?.data(using: .utf8) ?? Data()),
+        .init(id: UUID(), name: "Другое", type: .EXPENSE, icon: UIImage(systemName: "questionmark.circle")?.pngData() ?? Data(), color: UIColor.lightGray.toHex()?.data(using: .utf8) ?? Data())
     ]
 
     nonisolated(unsafe) static let incomes: [TransactionCategory] = [
         .init(id: UUID(), name: "Зарплата", type: .INCOME, icon: UIImage(systemName: "banknote")?.pngData() ?? Data(), color: UIColor.systemBlue.toHex()?.data(using: .utf8) ?? Data()),
         .init(id: UUID(), name: "Подарок", type: .INCOME, icon: UIImage(systemName: "gift")?.pngData() ?? Data(), color: UIColor.systemTeal.toHex()?.data(using: .utf8) ?? Data()),
-        .init(id: UUID(), name: "Доход", type: .INCOME, icon: UIImage(systemName: "arrow.up.circle")?.pngData() ?? Data(), color: UIColor.systemGreen.toHex()?.data(using: .utf8) ?? Data())
+        .init(id: UUID(), name: "Доход", type: .INCOME, icon: UIImage(systemName: "arrow.up.circle")?.pngData() ?? Data(), color: UIColor.systemGreen.toHex()?.data(using: .utf8) ?? Data()),
+        .init(id: UUID(), name: "Другое", type: .INCOME, icon: UIImage(systemName: "questionmark.circle")?.pngData() ?? Data(), color: UIColor.lightGray.toHex()?.data(using: .utf8) ?? Data())
     ]
 }
 
