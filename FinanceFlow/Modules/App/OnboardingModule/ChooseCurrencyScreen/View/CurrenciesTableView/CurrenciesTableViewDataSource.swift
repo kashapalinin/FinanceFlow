@@ -8,7 +8,7 @@ import UIKit
 import CurrencyFormatter
 
 final class CurrenciesTableViewDataSource: NSObject, UITableViewDataSource {
-    var dataSource: [Currency] = []
+    private var dataSource: [Currency] = []
     weak var presenter: ChooseCurrencyPresenterProtocol?
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

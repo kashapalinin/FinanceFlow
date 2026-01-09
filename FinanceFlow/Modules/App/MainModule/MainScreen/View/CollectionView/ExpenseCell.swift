@@ -9,28 +9,28 @@ import SnapKit
 import Domain
 
 class ExpenseCell: UICollectionViewCell {
-    private let iconContainer: UIView = {
+    private lazy var iconContainer: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 20
         view.clipsToBounds = true
         return view
     }()
 
-    private let categoryIcon: UIImageView = {
+    private lazy var categoryIcon: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .white
         return imageView
     }()
 
-    let categoryLabel: UILabel = {
+    private lazy var categoryLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .label
         return label
     }()
 
-    let amountLabel: UILabel = {
+    private(set) lazy var amountLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .label
@@ -38,7 +38,7 @@ class ExpenseCell: UICollectionViewCell {
         return label
     }()
 
-    let dateLabel: UILabel = {
+    private lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textColor = .gray

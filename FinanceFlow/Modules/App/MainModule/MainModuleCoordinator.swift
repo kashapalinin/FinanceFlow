@@ -6,6 +6,7 @@
 //
 import UIKit
 import Swinject
+import ServicesAPI
 
 protocol MainModuleCoordinatorProtocol: Coordinator {
     func showMoneyManagementScreen()
@@ -28,6 +29,7 @@ final class MainModuleCoordinator: MainModuleCoordinatorProtocol {
 
     func start() {
         showMoneyManagementScreen()
+        showSurvey()
     }
     
     func showMoneyManagementScreen() {
@@ -66,6 +68,13 @@ final class MainModuleCoordinator: MainModuleCoordinatorProtocol {
         )
         
         navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func showSurvey() {
+        let coordinator = resolver.resolve(SurveyBDUICoordinatorProtocol.self, argument: navigationController)!
+        childCoordinators.append(coordinator)
+
+        coordinator.start()
     }
     
     func closeCurrentScreen() {

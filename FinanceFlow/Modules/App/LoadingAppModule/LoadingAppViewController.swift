@@ -12,7 +12,7 @@ import Lottie
 class LoadingAppViewController: UIViewController {
     var presenter: LoadingAppPresenterProtocol?
     
-    lazy var animationCoinView: LottieAnimationView = {
+    private lazy var animationCoinView: LottieAnimationView = {
         let view = LottieAnimationView()
         view.animation = LottieAnimation.named("coinAnimation")
         view.contentMode = .scaleAspectFit

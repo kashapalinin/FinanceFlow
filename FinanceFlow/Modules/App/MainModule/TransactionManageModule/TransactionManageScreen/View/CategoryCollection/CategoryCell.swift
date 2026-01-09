@@ -44,11 +44,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    // MARK: - Properties
-    
     private var category: TransactionCategory?
-    
-    // MARK: - Initialization
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -59,8 +55,6 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         super.init(coder: coder)
         setupCell()
     }
-    
-    // MARK: - Setup
     
     private func setupCell() {
         contentView.addSubview(containerView)
@@ -88,13 +82,11 @@ class CategoryCollectionViewCell: UICollectionViewCell {
             make.bottom.lessThanOrEqualToSuperview()
         }
     }
-    
-    // MARK: - Configuration
-    
+
     func configure(with category: TransactionCategory, isSelected: Bool = false) {
         self.category = category
         
-        // Установка цвета фона
+
         if let color = UIColor(hexData: category.color) {
             circleView.backgroundColor = color
             circleView.tintColor = .white

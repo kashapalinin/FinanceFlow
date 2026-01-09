@@ -12,9 +12,6 @@ protocol TransactionsCategoryViewDelegate: AnyObject {
 }
 
 class TransactionsCategoryView: UIView {
-
-    // MARK: - UI Properties
-    
     private lazy var customNavBar: UIView = {
         let view = UIView()
         view.backgroundColor = .primary
@@ -22,14 +19,14 @@ class TransactionsCategoryView: UIView {
         return view
     }()
 
-    lazy var backButton: UIButton = {
+    private lazy var backButton: UIButton = {
         let button = UIButton(type: .system)
         button.tintColor = .white
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         return button
     }()
 
-    lazy var navTitleLabel: UILabel = {
+    private lazy var navTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Операции"
         label.font = .systemFont(ofSize: 18, weight: .bold)
@@ -38,7 +35,7 @@ class TransactionsCategoryView: UIView {
         return label
     }()
     
-    lazy var tableView: UITableView = {
+    private(set) lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.separatorStyle = .none
         tableView.backgroundColor = .background
@@ -50,12 +47,8 @@ class TransactionsCategoryView: UIView {
         return tableView
     }()
     
-    // MARK: - Properties
-    
     weak var delegate: TransactionsCategoryViewDelegate?
-    
-    // MARK: - Initialization
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -66,8 +59,6 @@ class TransactionsCategoryView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Setup Methods
     
     private func setupViews() {
         backgroundColor = .background
@@ -106,15 +97,10 @@ class TransactionsCategoryView: UIView {
         backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
     
-    
-    // MARK: - Actions
-    
     @objc private func backButtonTapped() {
         delegate?.didBackButtonTapped()
     }
-    
-    // MARK: - Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         applyBottomRoundedCorners()

@@ -9,7 +9,7 @@ import UIKit
 
 class AccountAmountViewController: UIViewController {
     var presenter: AccountAmountPresenterProtocol?
-    private var accountAmountView = AccountAmountView()
+    private let accountAmountView = AccountAmountView()
     
     override func loadView() {
         view = accountAmountView
@@ -48,7 +48,6 @@ class AccountAmountViewController: UIViewController {
             return
         }
         
-        // Нормализуем: заменяем запятую на точку
         let normalized = rawInput.replacingOccurrences(of: ",", with: ".")
         
         guard let amount = Double(normalized),
@@ -73,11 +72,7 @@ class AccountAmountViewController: UIViewController {
 extension AccountAmountViewController: UITextFieldDelegate {
     @objc private func updateUnderlineState() {
         let hasText = !(accountAmountView.amountTextField.text?.isEmpty ?? true)
-        if hasText {
-            accountAmountView.showActiveState()
-        } else {
-            accountAmountView.showInactiveState()
-        }
+        hasText ? accountAmountView.showActiveState() : accountAmountView.showInactiveState()
     }
         
     func textField(

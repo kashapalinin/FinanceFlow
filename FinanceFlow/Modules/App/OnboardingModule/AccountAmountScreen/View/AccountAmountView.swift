@@ -3,7 +3,7 @@ import SnapKit
 
 final class AccountAmountView: UIView {
 
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Введите сумму вашего бюджета"
         label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
@@ -13,12 +13,12 @@ final class AccountAmountView: UIView {
         return label
     }()
     
-    private let mainContainerView: UIView = {
+    private lazy var mainContainerView: UIView = {
         let view = UIView()
         return view
     }()
     
-    private let amountStackView: UIStackView = {
+    private lazy var amountStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.spacing = 12
@@ -42,7 +42,7 @@ final class AccountAmountView: UIView {
         return textField
     }()
     
-    private let currencyLabel: UILabel = {
+    private lazy var currencyLabel: UILabel = {
         let label = UILabel()
         label.text = "USD"
         label.font = UIFont.systemFont(ofSize: 36, weight: .medium)
@@ -52,7 +52,7 @@ final class AccountAmountView: UIView {
         return label
     }()
     
-    private let underlineView: UIView = {
+    private lazy var underlineView: UIView = {
         let view = UIView()
         view.backgroundColor = .lightGray.withAlphaComponent(0.8)
         return view
@@ -67,9 +67,7 @@ final class AccountAmountView: UIView {
         button.layer.shadowOpacity = 0.15
         return button
     }()
-    
-    // MARK: - Initialization
-    
+
     init() {
         super.init(frame: .zero)
         setupUI()
@@ -80,8 +78,6 @@ final class AccountAmountView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Setup Methods
     
     private func setupUI() {
         backgroundColor = .systemBackground
@@ -115,7 +111,6 @@ final class AccountAmountView: UIView {
             make.height.equalTo(60)
         }
         
-        // Одна линия под всей строкой
         underlineView.snp.makeConstraints { make in
             make.top.equalTo(amountStackView.snp.bottom).offset(8)
             make.leading.trailing.equalTo(amountStackView)
@@ -133,15 +128,12 @@ final class AccountAmountView: UIView {
         underlineView.layer.cornerRadius = 1.5
         underlineView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         
-        // Лёгкая тень для подчёркивания
         underlineView.layer.shadowColor = UIColor.systemBlue.cgColor
         underlineView.layer.shadowOffset = CGSize(width: 0, height: 2)
         underlineView.layer.shadowRadius = 4
         underlineView.layer.shadowOpacity = 0.2
     }
-    
-    // MARK: - Public API
-    
+        
     func getEnteredAmount() -> String? {
         return amountTextField.text
     }

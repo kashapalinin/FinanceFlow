@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA21F6572F1060E5004466A8 /* AnalyticsAPI in Frameworks */ = {isa = PBXBuildFile; productRef = AA21F6562F1060E5004466A8 /* AnalyticsAPI */; };
+		AA21F6592F1060E8004466A8 /* AnalyticsImpl in Frameworks */ = {isa = PBXBuildFile; productRef = AA21F6582F1060E8004466A8 /* AnalyticsImpl */; };
+		AA63BB172F1058FF00671123 /* FirebaseServicesAPI in Frameworks */ = {isa = PBXBuildFile; productRef = AA63BB162F1058FF00671123 /* FirebaseServicesAPI */; };
+		AA63BB192F10590500671123 /* FirebaseServicesImpl in Frameworks */ = {isa = PBXBuildFile; productRef = AA63BB182F10590500671123 /* FirebaseServicesImpl */; };
 		AAC31CE62EDD844E00C7869E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = AAC31CE52EDD844E00C7869E /* Lottie */; };
 		AAD8DF332ED106A700084DE1 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = AAD8DF322ED106A700084DE1 /* Swinject */; };
 		AAD8DFD32EDA2A6300084DE1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = AAD8DFD22EDA2A6300084DE1 /* SnapKit */; };
-		AAF186B42F0C1AA6005AFF72 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = AAF186B32F0C1AA6005AFF72 /* FirebaseCore */; };
 		AAF301042EFFD06F006827B7 /* ServicesAPI in Frameworks */ = {isa = PBXBuildFile; productRef = AAF301032EFFD06F006827B7 /* ServicesAPI */; };
 		AAF301062EFFD073006827B7 /* ServicesImpl in Frameworks */ = {isa = PBXBuildFile; productRef = AAF301052EFFD073006827B7 /* ServicesImpl */; };
 		AAF301142F0178EF006827B7 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = AAF301132F0178EF006827B7 /* DGCharts */; };
@@ -50,9 +53,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA63BB172F1058FF00671123 /* FirebaseServicesAPI in Frameworks */,
+				AA21F6572F1060E5004466A8 /* AnalyticsAPI in Frameworks */,
 				AAF3FE102EFF1C0A006827B7 /* StorageImpl in Frameworks */,
 				AAF301062EFFD073006827B7 /* ServicesImpl in Frameworks */,
-				AAF186B42F0C1AA6005AFF72 /* FirebaseCore in Frameworks */,
+				AA63BB192F10590500671123 /* FirebaseServicesImpl in Frameworks */,
 				AAD8DF332ED106A700084DE1 /* Swinject in Frameworks */,
 				AAF307782F066735006827B7 /* FSCalendar in Frameworks */,
 				AAF303BF2F03E851006827B7 /* CurrencyFormatter in Frameworks */,
@@ -61,6 +66,7 @@
 				AAD8DFD32EDA2A6300084DE1 /* SnapKit in Frameworks */,
 				AAF301142F0178EF006827B7 /* DGCharts in Frameworks */,
 				AAC31CE62EDD844E00C7869E /* Lottie in Frameworks */,
+				AA21F6592F1060E8004466A8 /* AnalyticsImpl in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,7 +127,10 @@
 				AAF301132F0178EF006827B7 /* DGCharts */,
 				AAF303BE2F03E851006827B7 /* CurrencyFormatter */,
 				AAF307772F066735006827B7 /* FSCalendar */,
-				AAF186B32F0C1AA6005AFF72 /* FirebaseCore */,
+				AA63BB162F1058FF00671123 /* FirebaseServicesAPI */,
+				AA63BB182F10590500671123 /* FirebaseServicesImpl */,
+				AA21F6562F1060E5004466A8 /* AnalyticsAPI */,
+				AA21F6582F1060E8004466A8 /* AnalyticsImpl */,
 			);
 			productName = FinanceFlow;
 			productReference = AAD8DF162ED1040300084DE1 /* FinanceFlow.app */;
@@ -158,7 +167,6 @@
 				AAF301122F0178EF006827B7 /* XCRemoteSwiftPackageReference "Charts" */,
 				AAF303BD2F03E851006827B7 /* XCRemoteSwiftPackageReference "CurrencyFormatter" */,
 				AAF307762F066735006827B7 /* XCRemoteSwiftPackageReference "FSCalendar" */,
-				AAF186B22F0C1A5C005AFF72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AAD8DF172ED1040300084DE1 /* Products */;
@@ -430,14 +438,6 @@
 				minimumVersion = 5.7.1;
 			};
 		};
-		AAF186B22F0C1A5C005AFF72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 12.7.0;
-			};
-		};
 		AAF301122F0178EF006827B7 /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ChartsOrg/Charts.git";
@@ -465,6 +465,22 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		AA21F6562F1060E5004466A8 /* AnalyticsAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AnalyticsAPI;
+		};
+		AA21F6582F1060E8004466A8 /* AnalyticsImpl */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AnalyticsImpl;
+		};
+		AA63BB162F1058FF00671123 /* FirebaseServicesAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebaseServicesAPI;
+		};
+		AA63BB182F10590500671123 /* FirebaseServicesImpl */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebaseServicesImpl;
+		};
 		AAC31CE52EDD844E00C7869E /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AAC31CE42EDD844E00C7869E /* XCRemoteSwiftPackageReference "lottie-ios" */;
@@ -479,11 +495,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AAD8DFD12EDA2A6300084DE1 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		AAF186B32F0C1AA6005AFF72 /* FirebaseCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AAF186B22F0C1A5C005AFF72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCore;
 		};
 		AAF301032EFFD06F006827B7 /* ServicesAPI */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -10,21 +10,21 @@ import CurrencyFormatter
 
 class CurrencyCell: UITableViewCell {
     
-    private let nameLabel: UILabel = {
+    private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .black
         return label
     }()
     
-    private let charCodeLabel: UILabel = {
+    private lazy var charCodeLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textColor = .gray
         return label
     }()
     
-    private let selectionIndicator: UIView = {
+    private lazy var selectionIndicator: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBlue
         view.layer.cornerRadius = 10

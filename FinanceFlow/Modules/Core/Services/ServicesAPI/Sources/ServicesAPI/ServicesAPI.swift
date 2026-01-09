@@ -9,6 +9,9 @@ public protocol ISettingsService {
     func getDefaultCurrency() -> Currency?
     func getCurrencySymbol() -> String
     func getCurrencyCode() -> String
+    func hasAppAlreadyBeenOpened() -> Bool
+    func isSurveyCompleted() -> Bool
+    func markSurveyAsCompleted()
 }
 
 public protocol IFinanceService {
@@ -22,4 +25,9 @@ public protocol IFinanceService {
     func addTransaction(_ transaction: Transaction)
     func deleteTransaction(by id: UUID)
     func getTransactions(by categoryId: UUID, interval: DateInterval) -> [Transaction]
+}
+
+public protocol ISurveyBDUIService {
+    func fetchSurvey() async throws -> SurveyPageDTO
+    func send(result: SurveyResult) async throws
 }

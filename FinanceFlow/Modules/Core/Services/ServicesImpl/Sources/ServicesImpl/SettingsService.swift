@@ -37,4 +37,21 @@ public final class SettingsService: ISettingsService {
         let currency: Currency? = userDefaultsStorage.get(forKey: "defaultCurrency")
         return currency?.charCode ?? ""
     }
+    
+    public func hasAppAlreadyBeenOpened() -> Bool {
+        let result: Bool = userDefaultsStorage.get(forKey: "hasAppAlreadyBeenOpened") ?? false
+        if !result {
+            userDefaultsStorage.save(true, forKey: "hasAppAlreadyBeenOpened")
+        }
+        return result
+    }
+    
+    public func isSurveyCompleted() -> Bool {
+        let result: Bool = userDefaultsStorage.get(forKey: "isSurveyCompleted") ?? false
+        return result
+    }
+    
+    public func markSurveyAsCompleted() {
+        userDefaultsStorage.save(true, forKey: "isSurveyCompleted")
+    }
 }

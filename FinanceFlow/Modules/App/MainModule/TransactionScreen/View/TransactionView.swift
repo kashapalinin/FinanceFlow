@@ -14,14 +14,14 @@ class TransactionView: UIView {
         return view
     }()
 
-    lazy var backButton: UIButton = {
+    private lazy var backButton: UIButton = {
         let button = UIButton(type: .system)
         button.tintColor = .white
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         return button
     }()
 
-    lazy var navTitleLabel: UILabel = {
+    private lazy var navTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Детали транзакции"
         label.font = .systemFont(ofSize: 18, weight: .bold)
@@ -80,7 +80,7 @@ class TransactionView: UIView {
 
     private let categoryIconContainer: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 20 // 40/2 = 20
+        view.layer.cornerRadius = 20
         view.clipsToBounds = true
         return view
     }()
@@ -88,7 +88,6 @@ class TransactionView: UIView {
     lazy var categoryIconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        // Не устанавливаем tintColor по умолчанию — только если изображение шаблонное
         return imageView
     }()
 
@@ -155,8 +154,6 @@ class TransactionView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Setup Methods
-
     private func setupViews() {
         backgroundColor = .background
 
@@ -167,29 +164,25 @@ class TransactionView: UIView {
         customNavBar.addSubview(backButton)
         customNavBar.addSubview(navTitleLabel)
 
-        // Amount section
         contentView.addSubview(amountStackView)
         amountStackView.addArrangedSubview(amountLabel)
         amountStackView.addArrangedSubview(currencyLabel)
 
-        // Category section
         contentView.addSubview(categoryContainerView)
         categoryContainerView.addSubview(categoryStackView)
 
         categoryIconContainer.addSubview(categoryIconImageView)
         categoryStackView.addArrangedSubview(categoryIconContainer)
         categoryStackView.addArrangedSubview(categoryNameLabel)
-        categoryStackView.addArrangedSubview(UIView()) // Spacer
+        categoryStackView.addArrangedSubview(UIView())
 
-        // Date section
         contentView.addSubview(dateContainerView)
         dateContainerView.addSubview(dateStackView)
 
         dateStackView.addArrangedSubview(dateIconImageView)
         dateStackView.addArrangedSubview(dateLabel)
-        dateStackView.addArrangedSubview(UIView()) // Spacer
+        dateStackView.addArrangedSubview(UIView())
 
-        // Delete button
         contentView.addSubview(deleteButton)
     }
 
@@ -302,7 +295,6 @@ class TransactionView: UIView {
     }
 
     func configure(with state: TransactionViewState) {
-        // Amount
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.minimumFractionDigits = 0

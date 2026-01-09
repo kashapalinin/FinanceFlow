@@ -12,7 +12,6 @@ protocol LoadingAppPresenterProtocol {
 
 final class LoadingAppPresenter: LoadingAppPresenterProtocol {
     weak var coordinator: Coordinator?
-    weak var view: UIViewController?
     
     func goToMainPart() {
         coordinator?.flowCompletionHandler?()

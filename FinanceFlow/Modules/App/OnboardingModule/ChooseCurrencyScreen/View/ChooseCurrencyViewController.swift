@@ -54,7 +54,6 @@ class ChooseCurrencyViewController: UIViewController {
     }
 }
 
-// MARK: - UITextFieldDelegate
 extension ChooseCurrencyViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         performSearch()
@@ -81,7 +80,6 @@ extension ChooseCurrencyViewController: UITextFieldDelegate {
     }
 }
 
-// MARK: - ChooseCurrencyViewProtocol
 extension ChooseCurrencyViewController: ChooseCurrencyViewProtocol {
     func updateSelectedCurrency(_ currency: Currency) {
         chooseCurrencyView.tableView.reloadData()
@@ -105,7 +103,6 @@ extension ChooseCurrencyViewController: ChooseCurrencyViewProtocol {
     }
     
     func updateSelectedCurrency() {
-        // Просто перезагружаем таблицу, чтобы обновить состояние ячеек
         chooseCurrencyView.tableView.reloadData()
         chooseCurrencyView.updateNextButton(enabled: presenter?.hasSelectedCurrency() ?? false)
     }

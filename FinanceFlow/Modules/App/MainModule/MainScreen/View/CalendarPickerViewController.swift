@@ -21,8 +21,7 @@ protocol CalendarPickerViewControllerDelegate: AnyObject {
 }
 
 class CalendarPickerViewController: UIViewController {
-    
-    // MARK: - Private Enums
+
     private enum Constants {
         static let calendarHeight: CGFloat = 320
         static let calendarInset: CGFloat = 16
@@ -51,16 +50,14 @@ class CalendarPickerViewController: UIViewController {
         }
     }
     
-    // MARK: - Properties
     weak var delegate: CalendarPickerViewControllerDelegate?
     var initialDate: Date = Date()
     var rangeMode: CalendarRangeMode = .day
     
-    // MARK: - UI Components
     private lazy var calendar: FSCalendar = {
         let cal = FSCalendar()
         cal.locale = Locale.current
-        cal.firstWeekday = 2 // Понедельник (для РФ)
+        cal.firstWeekday = 2
         cal.scope = .month
         cal.allowsMultipleSelection = false
         cal.allowsSelection = true
@@ -102,7 +99,6 @@ class CalendarPickerViewController: UIViewController {
     
     private var selectedRange: DateInterval?
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Constants.Colors.systemBackground
@@ -115,7 +111,6 @@ class CalendarPickerViewController: UIViewController {
         selectRangeContaining(initialDate)
     }
     
-    // MARK: - Setup Methods
     private func setupViews() {
         view.addSubview(calendar)
         view.addSubview(buttonStack)
@@ -154,7 +149,6 @@ class CalendarPickerViewController: UIViewController {
         cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
     }
     
-    // MARK: - Actions
     @objc private func doneTapped() {
         if let range = selectedRange {
             delegate?.calendarPickerViewController(self, didSelectRange: range)
@@ -166,7 +160,6 @@ class CalendarPickerViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    // MARK: - Range Logic
     private func selectRangeContaining(_ date: Date) {
         let range: DateInterval
         
@@ -190,14 +183,12 @@ class CalendarPickerViewController: UIViewController {
     }
 }
 
-// MARK: - FSCalendarDelegate
 extension CalendarPickerViewController: FSCalendarDelegate {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         selectRangeContaining(date)
     }
 }
 
-// MARK: - FSCalendarDataSource
 extension CalendarPickerViewController: FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         return 0

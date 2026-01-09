@@ -9,7 +9,6 @@ import SnapKit
 
 class DateRangePickerView: UIView {
     
-    // MARK: - Properties
     var selectedDate: Date? {
         didSet {
             updateDisplayText()
@@ -19,7 +18,6 @@ class DateRangePickerView: UIView {
     
     var onDateSelected: ((Date) -> Void)?
     
-    // MARK: - Constants
     private enum Constants {
         static let cornerRadius: CGFloat = 12
         static let iconSize: CGFloat = 22
@@ -35,7 +33,6 @@ class DateRangePickerView: UIView {
         static let dateStatusHeight: CGFloat = 28
     }
     
-    // MARK: - Private UI
     private lazy var mainContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -68,6 +65,8 @@ class DateRangePickerView: UIView {
         label.textColor = .label
         label.textAlignment = .left
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        label.text = "Выберите дату"
+        label.textColor = .secondaryLabel
         return label
     }()
     
@@ -106,7 +105,6 @@ class DateRangePickerView: UIView {
         return stack
     }()
     
-    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -119,35 +117,29 @@ class DateRangePickerView: UIView {
         setupGesture()
     }
     
-    // MARK: - Setup
     private func setupUI() {
         backgroundColor = .clear
         
-        // Настройка статуса даты
         dateStatusView.addSubview(dateStatusLabel)
         
         dateStatusLabel.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(Constants.dateStatusInsets)
         }
         
-        // Иерархия вью
         addSubview(mainContainerView)
         mainContainerView.addSubview(highlightView)
         mainContainerView.addSubview(contentStackView)
         
-        // Добавляем элементы в правильном порядке с правильными настройками
         contentStackView.addArrangedSubview(calendarIconImageView)
         contentStackView.addArrangedSubview(dateLabel)
         contentStackView.addArrangedSubview(dateStatusView)
         contentStackView.addArrangedSubview(chevronImageView)
         
-        // Настройка приоритетов сжатия
         calendarIconImageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         chevronImageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         dateStatusView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         dateLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
         
-        // Constraints с SnapKit
         mainContainerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -173,10 +165,6 @@ class DateRangePickerView: UIView {
             make.height.equalTo(Constants.dateStatusHeight)
             make.width.greaterThanOrEqualTo(Constants.dateStatusMinWidth)
         }
-        
-        // Устанавливаем начальный текст
-        dateLabel.text = "Выберите дату"
-        dateLabel.textColor = .secondaryLabel
     }
     
     private func setupGesture() {
@@ -221,7 +209,6 @@ class DateRangePickerView: UIView {
         rootVC.present(nav, animated: true)
     }
     
-    // MARK: - Update UI
     private func updateDisplayText() {
         guard let date = selectedDate else {
             dateLabel.text = "Выберите дату"
@@ -236,7 +223,6 @@ class DateRangePickerView: UIView {
         dateLabel.text = formatter.string(from: date)
         dateLabel.textColor = .label
         
-        // Обновляем статус выбранной даты
         updateDateStatus(for: date)
     }
     
@@ -269,10 +255,8 @@ class DateRangePickerView: UIView {
             dateStatusLabel.textColor = .secondaryLabel
         }
         
-        // Обновляем ширину в зависимости от текста
         dateStatusLabel.sizeToFit()
         
-        // Анимация появления статуса
         if dateStatusView.alpha == 0 {
             UIView.animate(withDuration: Constants.animationDuration) {
                 self.dateStatusView.alpha = 1
@@ -294,7 +278,6 @@ class DateRangePickerView: UIView {
         }
     }
     
-    // MARK: - Public Methods
     func setCustomDateStatus(_ text: String, color: UIColor = .systemBlue) {
         dateStatusLabel.text = text
         dateStatusView.backgroundColor = color.withAlphaComponent(0.1)
@@ -304,13 +287,11 @@ class DateRangePickerView: UIView {
     }
 }
 
-// MARK: - CalendarPickerViewControllerDelegate
 extension DateRangePickerView: CalendarPickerViewControllerDelegate {
     func calendarPickerViewController(_ controller: CalendarPickerViewController, didSelectRange range: DateInterval) {
         selectedDate = range.start
         onDateSelected?(range.start)
         
-        // Анимация успешного выбора
         UIView.animate(withDuration: 0.2, animations: {
             self.highlightView.backgroundColor = .systemBlue.withAlphaComponent(0.1)
             self.highlightView.alpha = Constants.highlightAlpha

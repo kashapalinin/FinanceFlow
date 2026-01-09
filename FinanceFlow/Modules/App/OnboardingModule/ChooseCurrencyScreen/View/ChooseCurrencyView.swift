@@ -9,8 +9,6 @@ import UIKit
 import SnapKit
 
 class ChooseCurrencyView: UIView {
-    
-    // MARK: - Constants
     private enum Constants {
         static let titleText = "Выберите валюту по умолчанию"
         static let searchPlaceholder = "Искать валюту..."
@@ -22,8 +20,7 @@ class ChooseCurrencyView: UIView {
         static let horizontalPadding: CGFloat = 16
         static let verticalSpacing: CGFloat = 16
     }
-    
-    // MARK: - UI Elements
+
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = Constants.titleText
@@ -80,7 +77,6 @@ class ChooseCurrencyView: UIView {
         return button
     }()
     
-    // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
@@ -92,38 +88,32 @@ class ChooseCurrencyView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Setup
     private func setupLayout() {
         addSubview(titleLabel)
         addSubview(searchContainer)
         addSubview(tableView)
         addSubview(nextButton)
         
-        // Добавляем элементы в контейнер поиска
         searchContainer.addSubview(searchTextField)
         searchContainer.addSubview(searchButton)
         
-        // Title Label
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(Constants.verticalSpacing * 2)
             make.leading.trailing.equalToSuperview().inset(Constants.horizontalPadding)
         }
         
-        // Search Container
         searchContainer.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(Constants.verticalSpacing * 1.5)
             make.leading.trailing.equalToSuperview().inset(Constants.horizontalPadding)
             make.height.equalTo(Constants.searchBarHeight)
         }
         
-        // Search Button
         searchButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(Padding.medium.rawValue)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(24)
         }
         
-        // Search Text Field
         searchTextField.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(Padding.default.rawValue)
             make.trailing.equalTo(searchButton.snp.leading).offset(-Padding.small.rawValue)
@@ -131,14 +121,12 @@ class ChooseCurrencyView: UIView {
             make.height.equalTo(40)
         }
         
-        // Table View
         tableView.snp.makeConstraints { make in
             make.top.equalTo(searchContainer.snp.bottom).offset(Constants.verticalSpacing)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
         
-        // Floating Next Button
         nextButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(safeAreaLayoutGuide).offset(-Constants.verticalSpacing * 2)
@@ -157,7 +145,6 @@ class ChooseCurrencyView: UIView {
         searchTextField.resignFirstResponder()
     }
     
-    // MARK: - Public Methods
     func updateNextButton(enabled: Bool) {
         nextButton.isEnabled = enabled
         nextButton.alpha = enabled ? 1.0 : 0.5

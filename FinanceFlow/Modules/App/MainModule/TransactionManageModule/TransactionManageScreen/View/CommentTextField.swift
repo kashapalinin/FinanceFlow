@@ -17,15 +17,10 @@ protocol CommentTextFieldDelegate: AnyObject {
 }
 
 class CommentTextField: UIView {
-    
-    // MARK: - Properties
-    
     private let maxLength: Int
     private let placeholderText: String
     weak var delegate: CommentTextFieldDelegate?
-    
-    // MARK: - UI Elements
-    
+        
     private lazy var textField: UITextField = {
         let textField = UITextField()
         textField.font = .systemFont(ofSize: 16, weight: .regular)
@@ -68,9 +63,7 @@ class CommentTextField: UIView {
         label.textAlignment = .right
         return label
     }()
-    
-    // MARK: - Initialization
-    
+        
     init(maxLength: Int = 100, placeholder: String = "Комментарий") {
         self.maxLength = maxLength
         self.placeholderText = placeholder
@@ -94,9 +87,7 @@ class CommentTextField: UIView {
         setupPlaceholder()
         updateCharacterCount()
     }
-    
-    // MARK: - Setup
-    
+        
     private func setupView() {
         addSubview(textField)
         addSubview(underlineView)
@@ -131,7 +122,6 @@ class CommentTextField: UIView {
             make.bottom.equalToSuperview().offset(-4)
         }
         
-        // Добавляем высоту для всей view
         self.snp.makeConstraints { make in
             make.height.equalTo(60)
         }
@@ -147,8 +137,6 @@ class CommentTextField: UIView {
             ]
         )
     }
-    
-    // MARK: - Public Methods
     
     func setText(_ text: String) {
         textField.text = text
@@ -176,8 +164,6 @@ class CommentTextField: UIView {
         textField.resignFirstResponder()
     }
     
-    // MARK: - Private Methods
-    
     private func updatePlaceholderVisibility() {
         let isEmpty = textField.text?.isEmpty ?? true
         
@@ -198,7 +184,6 @@ class CommentTextField: UIView {
         let count = textField.text?.count ?? 0
         characterCountLabel.text = "\(count)/\(maxLength)"
         
-        // Меняем цвет при приближении к лимиту
         if count > maxLength * 8 / 10 {
             characterCountLabel.textColor = .systemOrange
         } else if count > maxLength {
@@ -227,7 +212,6 @@ class CommentTextField: UIView {
     @objc private func textFieldDidChange() {
         guard let text = textField.text else { return }
         
-        // Обрезаем текст если превышен лимит
         if text.count > maxLength {
             textField.text = String(text.prefix(maxLength))
         }
@@ -238,7 +222,6 @@ class CommentTextField: UIView {
     }
 }
 
-// MARK: - UITextFieldDelegate
 extension CommentTextField: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

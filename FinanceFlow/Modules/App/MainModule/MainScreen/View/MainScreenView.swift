@@ -10,10 +10,10 @@ protocol MainScreenViewDelegate: AnyObject {
     func periodTypeChanged(to index: Int)
     func didTapIncome()
     func didTapExpense()
+    func addTapped()
 }
 
 class MainScreenView: UIView {
-    // MARK: - Existing Properties
     private lazy var backgroundFillView: UIView = {
         let view = UIView()
         view.backgroundColor = .primary
@@ -26,7 +26,7 @@ class MainScreenView: UIView {
         return view
     }()
 
-    lazy var budgetLabel: UILabel = {
+    private lazy var budgetLabel: UILabel = {
         let label = UILabel()
         label.text = "Бюджет"
         label.font = .systemFont(ofSize: 16, weight: .bold)
@@ -35,16 +35,16 @@ class MainScreenView: UIView {
         return label
     }()
 
-    lazy var amountLabel: UILabel = {
+    private(set) lazy var amountLabel: UILabel = {
         let label = UILabel()
-        label.text = "12 500"
+        label.text = "0"
         label.font = .systemFont(ofSize: 24, weight: .bold)
         label.textColor = .white
         label.textAlignment = .center
         return label
     }()
 
-    lazy var expensesButton: UIButton = {
+    private lazy var expensesButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Расходы", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -52,7 +52,7 @@ class MainScreenView: UIView {
         return button
     }()
 
-    lazy var incomeButton: UIButton = {
+    private lazy var incomeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Доходы", for: .normal)
         button.setTitleColor(.white.withAlphaComponent(0.6), for: .normal)
@@ -74,8 +74,7 @@ class MainScreenView: UIView {
         return stack
     }()
 
-    // MARK: - Chart Properties
-    lazy var statsContainer: UIView = {
+    private lazy var statsContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 20
@@ -87,7 +86,7 @@ class MainScreenView: UIView {
         return view
     }()
 
-    lazy var periodTabStack: UIStackView = {
+    private lazy var periodTabStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
@@ -95,7 +94,7 @@ class MainScreenView: UIView {
         return stack
     }()
 
-    lazy var dayButton: UIButton = {
+    private lazy var dayButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("День", for: .normal)
         button.setTitleColor(.primary, for: .normal)
@@ -103,7 +102,7 @@ class MainScreenView: UIView {
         return button
     }()
 
-    lazy var weekButton: UIButton = {
+    private lazy var weekButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Неделя", for: .normal)
         button.setTitleColor(.gray, for: .normal)
@@ -111,7 +110,7 @@ class MainScreenView: UIView {
         return button
     }()
 
-    lazy var monthButton: UIButton = {
+    private lazy var monthButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Месяц", for: .normal)
         button.setTitleColor(.gray, for: .normal)
@@ -119,7 +118,7 @@ class MainScreenView: UIView {
         return button
     }()
 
-    lazy var yearButton: UIButton = {
+    private lazy var yearButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Год", for: .normal)
         button.setTitleColor(.gray, for: .normal)
@@ -127,14 +126,13 @@ class MainScreenView: UIView {
         return button
     }()
 
-    lazy var periodUnderlineView: UIView = {
+    private lazy var periodUnderlineView: UIView = {
         let view = UIView()
         view.backgroundColor = .primary
         return view
     }()
 
-    // MARK: - Period Navigation (под underline, над графиком)
-    lazy var periodNavigationStack: UIStackView = {
+    private lazy var periodNavigationStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.spacing = 8
@@ -142,31 +140,31 @@ class MainScreenView: UIView {
         return stack
     }()
 
-    lazy var periodLeftButton: UIButton = {
+    private lazy var periodLeftButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         button.tintColor = .primary
         return button
     }()
 
-    lazy var periodLabel: UILabel = {
+    private(set) lazy var periodLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .label
         label.textAlignment = .center
-        label.text = "Сегодня"
+        label.text = "-"
+        label.isUserInteractionEnabled = true
         return label
     }()
 
-    lazy var periodRightButton: UIButton = {
+    private lazy var periodRightButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         button.tintColor = .primary
         return button
     }()
 
-    // MARK: - Chart Views
-    lazy var pieChartView: PieChartView = {
+    private lazy var pieChartView: PieChartView = {
         let chart = PieChartView()
         chart.holeColor = .clear
         chart.transparentCircleColor = .clear
@@ -181,7 +179,7 @@ class MainScreenView: UIView {
         return chart
     }()
 
-    lazy var barChartContainer: UIView = {
+    private lazy var barChartContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         view.isHidden = true
@@ -190,7 +188,7 @@ class MainScreenView: UIView {
         return view
     }()
 
-    lazy var chartCenterLabel: UILabel = {
+    private lazy var chartCenterLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .gray
@@ -199,9 +197,9 @@ class MainScreenView: UIView {
         return label
     }()
 
-    lazy var chartAmountLabel: UILabel = {
+    private lazy var chartAmountLabel: UILabel = {
         let label = UILabel()
-        label.text = "₽0"
+        label.text = "0"
         label.font = .systemFont(ofSize: 16, weight: .bold)
         label.textColor = .label
         label.textAlignment = .center
@@ -209,7 +207,7 @@ class MainScreenView: UIView {
         return label
     }()
 
-    lazy var addButton: UIButton = {
+    private lazy var addButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .secondary
         button.tintColor = .black
@@ -220,7 +218,7 @@ class MainScreenView: UIView {
         return button
     }()
 
-    lazy var collectionView: UICollectionView = {
+    private(set) lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 12
@@ -240,10 +238,8 @@ class MainScreenView: UIView {
     private var barLayers: [CAShapeLayer] = []
     private var currentBarData: [(value: Double, color: UIColor, label: String)] = []
 
-    // MARK: - Delegate
     weak var delegate: MainScreenViewDelegate?
 
-    // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -257,7 +253,6 @@ class MainScreenView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Setup
     private func setupViews() {
         backgroundColor = .background
 
@@ -396,15 +391,15 @@ class MainScreenView: UIView {
         monthButton.addTarget(self, action: #selector(monthButtonTapped), for: .touchUpInside)
         yearButton.addTarget(self, action: #selector(yearButtonTapped), for: .touchUpInside)
 
-        periodLabel.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(periodLabelTapped))
         periodLabel.addGestureRecognizer(tapGesture)
 
         periodLeftButton.addTarget(self, action: #selector(periodLeftTapped), for: .touchUpInside)
         periodRightButton.addTarget(self, action: #selector(periodRightTapped), for: .touchUpInside)
+        
+        addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
     }
 
-    // MARK: - Horizontal Bar Chart
     private func createHorizontalBarChart(_ data: [(value: Double, color: UIColor, label: String)]) {
         barLayers.forEach { $0.removeFromSuperlayer() }
         barLayers.removeAll()
@@ -449,7 +444,6 @@ class MainScreenView: UIView {
         return []
     }
 
-    // MARK: - Public Methods for Chart Updates
     func updatePieChartData(entries: [PieChartDataEntry], colors: [UIColor]? = nil) {
         var processedEntries = entries
         var processedColors = colors ?? [.systemBlue, .systemGreen, .systemOrange, .systemPurple, .systemRed]
@@ -498,7 +492,6 @@ class MainScreenView: UIView {
     func updateChartForPeriod(_ periodIndex: Int) {
     }
 
-    // MARK: - Actions (forward to delegate)
     @objc private func expensesButtonTapped() {
         setSelectedTab(false)
         delegate?.didTapExpense()
@@ -506,6 +499,10 @@ class MainScreenView: UIView {
     @objc private func incomeButtonTapped() {
         setSelectedTab(true)
         delegate?.didTapIncome()
+    }
+    
+    @objc func addTapped() {
+        delegate?.addTapped()
     }
     
     @objc private func dayButtonTapped() { delegate?.periodTypeChanged(to: 0) }
@@ -517,7 +514,6 @@ class MainScreenView: UIView {
     @objc private func periodLeftTapped() { delegate?.navigatePeriodBackward() }
     @objc private func periodRightTapped() { delegate?.navigatePeriodForward() }
 
-    // MARK: - Public Methods
     func setSelectedTab(_ isIncome: Bool, animated: Bool = true) {
         guard isIncome != isIncomeSelected else { return }
         isIncomeSelected = isIncome
@@ -640,12 +636,6 @@ class MainScreenView: UIView {
     }
 }
 
-// MARK: - Delegate Extension
-extension MainScreenView {
-    // Делегат теперь сообщает о смене типа периода
-}
-
-// MARK: - Array Extension
 extension Array {
     subscript(safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil

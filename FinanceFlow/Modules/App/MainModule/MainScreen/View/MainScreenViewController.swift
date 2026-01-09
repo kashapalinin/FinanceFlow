@@ -44,7 +44,6 @@ class MainScreenViewController: UIViewController {
         mainView.collectionView.addGestureRecognizer(panGesture)
         mainView.delegate = self
         
-        setupActions()
         setupCollectionView()
         updateDisplayedPeriod(for: currentRange)
         
@@ -54,17 +53,9 @@ class MainScreenViewController: UIViewController {
         }
     }
 
-    private func setupActions() {
-        mainView.addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
-    }
-
     private func setupCollectionView() {
         mainView.collectionView.delegate = collectionDelegate
         mainView.collectionView.dataSource = collectionDataSource
-    }
-
-    @objc private func addTapped() {
-        presenter?.showTransactionManageScreen()
     }
 
     private func updateChartForIncome() {
@@ -82,7 +73,6 @@ class MainScreenViewController: UIViewController {
         mainView.updatePieChartData(entries: entries, colors: transactions.map { UIColor(hexData: $0.category.color) ?? .primary })
     }
 
-    // MARK: - Period Display & Navigation
     private func updateDisplayedPeriod(for range: DateInterval) {
         currentRange = range
         
@@ -91,17 +81,17 @@ class MainScreenViewController: UIViewController {
         let end = range.end
         
         switch mainView.currentPeriodIndex {
-        case 0: // День
+        case 0:
             formatter.setLocalizedDateFormatFromTemplate("d MMMM yyyy")
             mainView.periodLabel.text = formatter.string(from: start)
-        case 1: // Неделя
+        case 1:
             let startStr = DateFormatter.localizedString(from: start, dateStyle: .medium, timeStyle: .none)
             let endStr = DateFormatter.localizedString(from: end, dateStyle: .medium, timeStyle: .none)
             mainView.periodLabel.text = "\(startStr) – \(endStr)"
-        case 2: // Месяц
+        case 2:
             formatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
             mainView.periodLabel.text = formatter.string(from: start)
-        case 3: // Год
+        case 3:
             formatter.setLocalizedDateFormatFromTemplate("yyyy")
             mainView.periodLabel.text = formatter.string(from: start)
         default:
@@ -142,15 +132,16 @@ class MainScreenViewController: UIViewController {
     }
 }
 
-// MARK: - Gesture Delegate
 extension MainScreenViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
 }
 
-// MARK: - MainScreenViewDelegate
 extension MainScreenViewController: MainScreenViewDelegate {
+    func addTapped() {
+        presenter?.showTransactionManageScreen()
+    }
     
     func updateTransactions() {
         let transactionsByCategory = presenter?.formTransactionsByCategories(type: mainView.isIncomeSelected ? .INCOME : .EXPENSE, for: currentRange) ?? []
@@ -221,7 +212,6 @@ extension MainScreenViewController: MainScreenViewDelegate {
     }
 }
 
-// MARK: - CalendarPickerViewControllerDelegate
 extension MainScreenViewController: CalendarPickerViewControllerDelegate {
     func calendarPickerViewController(_ controller: CalendarPickerViewController, didSelectRange range: DateInterval) {
         updateDisplayedPeriod(for: range)

@@ -6,7 +6,7 @@
 //
 import UIKit
 import Swinject
-
+import AnalyticsAPI
 
 final class AppCoordinator: NSObject, Coordinator {
     var navigationController: UINavigationController
@@ -25,6 +25,7 @@ final class AppCoordinator: NSObject, Coordinator {
 
     func start() {
         showLoadingAppModule()
+        resolver.resolve(IAppAnalytics.self)!.trackAppLaunch()
     }
     
     func showLoadingAppModule() {

@@ -19,13 +19,13 @@ class WelcomeView: UIView {
         static let verticalSpacing: CGFloat = 32
     }
     
-    private var coinImage: UIImageView = {
+    private lazy var coinImage: UIImageView = {
         let imageView = UIImageView(image: .coin)
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
-    private var titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = Constants.titleText
         label.font = .systemFont(ofSize: FontConstants.title.rawValue, weight: .heavy)
@@ -36,7 +36,7 @@ class WelcomeView: UIView {
         return label
     }()
     
-    private var subtitleLabel: UILabel = {
+    private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = Constants.subtitleText
         label.font = .systemFont(ofSize: FontConstants.default.rawValue)
@@ -47,7 +47,7 @@ class WelcomeView: UIView {
         return label
     }()
     
-    private(set) var nextButton: UIButton = {
+    private(set) lazy var nextButton: UIButton = {
         let button = ButtonFactory.createPrimaryButton(title: Constants.nextButtonTitle)
         button.layer.cornerRadius = Constants.buttonHeight / 2
         return button
@@ -67,7 +67,6 @@ class WelcomeView: UIView {
         let containerView = UIView()
         addSubview(containerView)
         
-        // Добавляем элементы в контейнер
         containerView.addSubview(coinImage)
         containerView.addSubview(titleLabel)
         containerView.addSubview(subtitleLabel)
@@ -79,26 +78,22 @@ class WelcomeView: UIView {
             make.leading.trailing.equalToSuperview()
         }
         
-        // Картинка - сверху контейнера
         coinImage.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
             make.width.height.equalTo(Constants.coinSize)
         }
         
-        // Заголовок - под картинкой с большим отступом
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(coinImage.snp.bottom).offset(Constants.verticalSpacing * 1.5)
             make.leading.trailing.equalToSuperview().inset(Constants.horizontalPadding)
         }
         
-        // Подзаголовок - под заголовком с отступом
         subtitleLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(Constants.verticalSpacing)
             make.leading.trailing.equalToSuperview().inset(Constants.horizontalPadding)
         }
         
-        // Кнопка - под подзаголовком с большим отступом и фиксированной шириной
         nextButton.snp.makeConstraints { make in
             make.top.equalTo(subtitleLabel.snp.bottom).offset(Constants.verticalSpacing * 1.5)
             make.centerX.equalToSuperview()

@@ -8,6 +8,7 @@ import Swinject
 import ServicesAPI
 import ServicesImpl
 import StorageAPI
+import FirebaseServicesAPI
 
 final class ServicesAssembly: Assembly {
     func assemble(container: Container) {
@@ -19,6 +20,10 @@ final class ServicesAssembly: Assembly {
         
         container.register(IFinanceService.self) { resolver in
             FinanceService(coreDataManager: resolver.resolve(ICoreDataManager.self)!)
+        }
+        
+        container.register(ISurveyBDUIService.self) { resolver in
+            SurveyBDUIService(firestoreService: resolver.resolve(IFirestoreService.self)!)
         }
     }
 }

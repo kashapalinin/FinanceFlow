@@ -11,7 +11,6 @@ final class LoadingAppAssembly {
         let vc = LoadingAppViewController()
         let presenter = LoadingAppPresenter()
         vc.presenter = presenter
-        presenter.view = vc
         presenter.coordinator = coordinator
         return vc
     }

@@ -30,14 +30,14 @@ class TransactionManageView: UIView {
         return view
     }()
 
-    lazy var backButton: UIButton = {
+    private lazy var backButton: UIButton = {
         let button = UIButton(type: .system)
         button.tintColor = .white
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         return button
     }()
 
-    lazy var navTitleLabel: UILabel = {
+    private lazy var navTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Операции"
         label.font = .systemFont(ofSize: 18, weight: .bold)
@@ -46,7 +46,7 @@ class TransactionManageView: UIView {
         return label
     }()
 
-    lazy var expensesButton: UIButton = {
+    private lazy var expensesButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Расходы", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -54,7 +54,7 @@ class TransactionManageView: UIView {
         return button
     }()
 
-    lazy var incomeButton: UIButton = {
+    private lazy var incomeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Доходы", for: .normal)
         button.setTitleColor(.white.withAlphaComponent(0.6), for: .normal)
@@ -62,7 +62,7 @@ class TransactionManageView: UIView {
         return button
     }()
 
-    lazy var tabStack: UIStackView = {
+    private lazy var tabStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
@@ -70,7 +70,7 @@ class TransactionManageView: UIView {
         return stack
     }()
 
-    lazy var underlineView: UIView = {
+    private lazy var underlineView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         return view
@@ -178,13 +178,10 @@ class TransactionManageView: UIView {
     private(set) lazy var datePicker: DateRangePickerView = {
         DateRangePickerView()
     }()
-    
-    // MARK: - Initialization
 
     var isIncomeSelected = false
     weak var delegate: TransactionManageDelegate?
 
-    // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
