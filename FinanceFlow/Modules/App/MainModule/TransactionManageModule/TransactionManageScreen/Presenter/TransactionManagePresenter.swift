@@ -9,6 +9,7 @@ import CoreData
 import Domain
 import ServicesAPI
 import CurrencyFormatter
+import CrashlyticsAPI
 
 protocol TransactionManagePresenterProtocol {
     func getCategories(for type: TransactionType) -> [TransactionCategory]
@@ -22,17 +23,27 @@ class TransactionManagePresenter: TransactionManagePresenterProtocol {
 
     private let settingsService: ISettingsService
     private let financeService: IFinanceService
+    private let crashlytics: IAppCrashlytics
     
     init(
         settingsService: ISettingsService,
-        financeService: IFinanceService
+        financeService: IFinanceService,
+        crashlytics: IAppCrashlytics
     ) {
         self.settingsService = settingsService
         self.financeService = financeService
+        self.crashlytics = crashlytics
     }
     
     func getCategories(for type: TransactionType) -> [TransactionCategory] {
-        financeService.getCategories(for: type)
+        do {
+            return try financeService.getCategories(for: type)
+        } catch {
+            crashlytics.recordNonFatal(error, info: [
+                "context": "getCategories"
+            ])
+            return []
+        }
     }
     
     func addTransaction(type: TransactionType, amount: Double, category: TransactionCategory, date: Date, comment: String? = nil) {

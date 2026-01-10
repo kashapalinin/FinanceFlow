@@ -7,7 +7,7 @@
 import Foundation
 import CoreData
 
-public struct TransactionCategory {
+public struct TransactionCategory: Identifiable, Equatable {
     public let id: UUID
     public let name: String
     public let type: TransactionType

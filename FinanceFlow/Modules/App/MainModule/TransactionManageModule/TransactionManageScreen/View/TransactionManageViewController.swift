@@ -10,7 +10,7 @@ import Domain
 
 class TransactionManageViewController: UIViewController {
     var presenter: TransactionManagePresenterProtocol?
-    private let transactionManageView = TransactionManageView()
+    let transactionManageView = TransactionManageView()
     private(set) lazy var dataSource: CategoryCollectionDataSource = {
         CategoryCollectionDataSource()
     }()
@@ -72,7 +72,7 @@ class TransactionManageViewController: UIViewController {
 }
 
 extension TransactionManageViewController: UITextFieldDelegate {
-    @objc private func updateUnderlineState() {
+    @objc func updateUnderlineState() {
         let hasText = !(transactionManageView.amountTextField.text?.isEmpty ?? true)
         if hasText {
             transactionManageView.showActiveState()
@@ -135,6 +135,8 @@ extension TransactionManageViewController: UITextFieldDelegate {
 extension TransactionManageViewController: TransactionManageDelegate {
     func updateCollectionView(with type: TransactionType) {
         dataSource.categories = presenter?.getCategories(for: type) ?? []
+        dataSource.selectedCategory = nil
+        updateAddButtonState()
         transactionManageView.collectionView.reloadData()
     }
     func didTapIncome() {

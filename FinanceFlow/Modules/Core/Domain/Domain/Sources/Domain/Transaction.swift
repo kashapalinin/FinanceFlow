@@ -11,7 +11,7 @@ public enum TransactionType: Int16 {
     case EXPENSE = 0, INCOME = 1
 }
 
-public struct Transaction {
+public struct Transaction: Identifiable, Equatable {
     public var id: UUID
     public var amount: Double
     public var categoryId: UUID

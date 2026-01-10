@@ -33,6 +33,7 @@ final class SurveyViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupKeyboardDismissal()
+        presenter?.logSurveyShown(id: DeviceIdProvider.getDeviceId())
     }
     
     private func setupKeyboardDismissal() {
@@ -92,15 +93,13 @@ final class SurveyViewController: UIViewController {
     }
 
     @objc private func submit() {
-        guard let identifier = UIDevice.current.identifierForVendor else { return }
-
         let comment = commentView?.text == commentView?.placeholderText
             ? nil
             : commentView?.text
 
         let result = SurveyResult(
             surveyId: dto.id,
-            deviceId: identifier.uuidString,
+            deviceId: DeviceIdProvider.getDeviceId(),
             rating: starView.rating,
             comment: comment
         )

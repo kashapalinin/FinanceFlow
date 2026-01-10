@@ -16,15 +16,15 @@ public protocol ISettingsService {
 
 public protocol IFinanceService {
     func saveBudget(sum: Double)
-    func getInitialBudget() -> Double
-    func getCurrentBudget() -> Double
-    func getTransactions(for interval: DateInterval) -> [Transaction]
-    func getCategories(for transactionType: TransactionType) -> [TransactionCategory]
-    func getCategory(by id: UUID) -> TransactionCategory
-    func getTransaction(by id: UUID) -> Transaction
+    func getInitialBudget() throws -> Double
+    func getCurrentBudget() throws -> Double
+    func getTransactions(for interval: DateInterval) throws -> [Transaction]
+    func getCategories(for transactionType: TransactionType) throws -> [TransactionCategory]
+    func getCategory(by id: UUID) throws -> TransactionCategory?
+    func getTransaction(by id: UUID) throws -> Transaction?
     func addTransaction(_ transaction: Transaction)
-    func deleteTransaction(by id: UUID)
-    func getTransactions(by categoryId: UUID, interval: DateInterval) -> [Transaction]
+    func deleteTransaction(by id: UUID) throws
+    func getTransactions(by categoryId: UUID, interval: DateInterval) throws -> [Transaction]
 }
 
 public protocol ISurveyBDUIService {

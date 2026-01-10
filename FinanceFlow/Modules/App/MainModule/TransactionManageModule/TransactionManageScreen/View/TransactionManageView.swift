@@ -102,6 +102,7 @@ class TransactionManageView: UIView {
         textField.contentScaleFactor = 0.5
         textField.setContentHuggingPriority(.defaultLow, for: .horizontal)
         textField.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        textField.accessibilityIdentifier = "amountTextField"
         return textField
     }()
     

@@ -7,7 +7,7 @@
 import Foundation
 import CoreData
 
-public struct Budget {
+public struct Budget: Identifiable, Equatable {
     public let id: UUID
     public let amount: Double
     public let startDate: Date

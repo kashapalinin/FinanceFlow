@@ -7,6 +7,7 @@
 import UIKit
 import Swinject
 import ServicesAPI
+import CrashlyticsAPI
 
 final class TransactionCategoryAssembly {
     func assemble(
@@ -16,7 +17,10 @@ final class TransactionCategoryAssembly {
         resolver: Resolver
     ) -> UIViewController {
         let vc = TransactionsCategoryViewController()
-        let presenter = TransactionsCategoryPresenter(financeService: resolver.resolve(IFinanceService.self)!)
+        let presenter = TransactionsCategoryPresenter(
+            financeService: resolver.resolve(IFinanceService.self)!,
+            crashlytics: resolver.resolve(IAppCrashlytics.self)!
+        )
         vc.presenter = presenter
         presenter.coordinator = coordinator
         vc.configure(with: categoryId, interval: interval)

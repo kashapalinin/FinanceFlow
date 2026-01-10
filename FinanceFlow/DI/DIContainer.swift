@@ -21,6 +21,7 @@ final class DIContainer {
         shared.registerModule(ServicesAssembly())
         shared.registerModule(FirebaseServicesAssembly())
         shared.registerModule(AnalyticsAssembly())
+        shared.registerModule(CrashlyticsAssembly())
         shared.registerModule(SurveyBDUIModuleAssembly())
     }
 }

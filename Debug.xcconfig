@@ -1,0 +1,20 @@
+//
+//  Debug.xcconfig.swift
+//  FinanceFlow
+//
+//  Created by Павел Калинин on 10.01.2026.
+//
+
+// Swift Compiler Flags
+OTHER_SWIFT_FLAGS = $(inherited) -D DEBUG -D DEVELOP
+
+// Optimization
+SWIFT_OPTIMIZATION_LEVEL = -Onone
+GCC_OPTIMIZATION_LEVEL = 0
+
+// Debug Information
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+
+// Code Coverage
+CLANG_COVERAGE_MAPPING = YES
+GCC_GENERATE_TEST_COVERAGE_FILES = YES

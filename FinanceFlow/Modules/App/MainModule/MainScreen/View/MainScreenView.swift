@@ -215,6 +215,7 @@ class MainScreenView: UIView {
         let config = UIImage.SymbolConfiguration(pointSize: 16)
         let plusImage = UIImage(systemName: "plus", withConfiguration: config)
         button.setImage(plusImage, for: .normal)
+        button.accessibilityIdentifier = "AddTransactionButton"
         return button
     }()
 

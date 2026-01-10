@@ -20,7 +20,7 @@ public final class FirebaseServicesAssembly: Assembly {
         }.inObjectScope(.container)
 
         container.register(IFirebaseCrashlyticsService.self) { _ in
-            FirebaseCrashReportingService()
+            FirebaseCrashlyticsService()
         }.inObjectScope(.container)
 
         container.register(IFirestoreService.self) { _ in

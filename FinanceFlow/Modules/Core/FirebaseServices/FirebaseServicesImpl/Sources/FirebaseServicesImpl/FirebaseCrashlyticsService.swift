@@ -9,8 +9,10 @@
 import FirebaseCrashlytics
 import FirebaseServicesAPI
 
-public final class FirebaseCrashReportingService: IFirebaseCrashlyticsService {
-    public init() {}
+public final class FirebaseCrashlyticsService: IFirebaseCrashlyticsService {
+    public init() {
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
+    }
 
     public func record(error: Error, info: [String : Any]?) {
         let crashlytics = Crashlytics.crashlytics()

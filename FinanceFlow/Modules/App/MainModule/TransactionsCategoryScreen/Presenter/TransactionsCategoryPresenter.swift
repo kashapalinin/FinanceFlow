@@ -7,27 +7,31 @@
 import ServicesAPI
 import Foundation
 import Domain
+import CrashlyticsAPI
 
 protocol TransactionsCategoryPresenterProtocol {
     func backButtonTapped()
     func groupTransactionsByDate(_ transactions: [Transaction]) -> [(date: String, items: [Transaction])]
     func showTransactionScreen(transactionId: UUID)
-    func getCategory(by id: UUID) -> TransactionCategory
-    func getTransactions(categoryId: UUID, interval: DateInterval) -> [Transaction] 
+    func getCategory(by id: UUID) -> TransactionCategory?
+    func getTransactions(categoryId: UUID, interval: DateInterval) -> [Transaction]
 }
 
 final class TransactionsCategoryPresenter: TransactionsCategoryPresenterProtocol {
     weak var coordinator: MainModuleCoordinatorProtocol?
     private let financeService: IFinanceService
+    private let crashlytics: IAppCrashlytics
     
-    init(financeService: IFinanceService) {
+    init(financeService: IFinanceService,
+         crashlytics: IAppCrashlytics
+    ) {
         self.financeService = financeService
+        self.crashlytics = crashlytics
     }
     
     func groupTransactionsByDate(_ transactions: [Transaction]) -> [(date: String, items: [Transaction])] {
         var groupedDict: [String: [Transaction]] = [:]
         
-        // Группируем транзакции по дате
         for transaction in transactions {
             let createdAt = transaction.date
             
@@ -42,7 +46,6 @@ final class TransactionsCategoryPresenter: TransactionsCategoryPresenterProtocol
         let sortedGroups = groupedDict
             .map { (date: $0.key, items: $0.value) }
             .sorted { (group1, group2) -> Bool in
-                // Сортируем группы по дате (от новой к старой)
                 guard let date1 = parseDateFromString(group1.date),
                       let date2 = parseDateFromString(group2.date) else {
                     return false
@@ -50,7 +53,6 @@ final class TransactionsCategoryPresenter: TransactionsCategoryPresenterProtocol
                 return date1 > date2
             }
             .map { group -> (date: String, items: [Transaction]) in
-                // Сортируем транзакции внутри группы (от новой к старой)
                 let sortedItems = group.items.sorted { (t1, t2) -> Bool in
                     let date1 = t1.date
                     let date2 = t2.date
@@ -102,11 +104,25 @@ final class TransactionsCategoryPresenter: TransactionsCategoryPresenterProtocol
         coordinator?.showTransactionScreen(transactionId: transactionId)
     }
     
-    func getCategory(by id: UUID) -> TransactionCategory {
-        financeService.getCategory(by: id)
+    func getCategory(by id: UUID) -> TransactionCategory? {
+        do {
+            return try financeService.getCategory(by: id)
+        } catch {
+            crashlytics.recordNonFatal(error, info: [
+                "context": "TransactionsCategoryPresenter.getCategory"
+            ])
+            return nil
+        }
     }
     
     func getTransactions(categoryId: UUID, interval: DateInterval) -> [Transaction] {
-        financeService.getTransactions(by: categoryId, interval: interval)
+        do {
+            return try financeService.getTransactions(by: categoryId, interval: interval)
+        } catch {
+            crashlytics.recordNonFatal(error, info: [
+                "context": "TransactionsCategoryPresenter.getTransactions"
+            ])
+            return []
+        }
     }
 }

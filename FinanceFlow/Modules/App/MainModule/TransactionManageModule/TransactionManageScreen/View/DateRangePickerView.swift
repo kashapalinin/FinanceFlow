@@ -191,24 +191,6 @@ class DateRangePickerView: UIView {
         }
     }
     
-    @objc private func showCalendarPicker() {
-        guard let rootVC = UIApplication.shared.windows.first?.rootViewController else { return }
-        
-        let calendarVC = CalendarPickerViewController()
-        calendarVC.initialDate = selectedDate ?? Date()
-        calendarVC.delegate = self
-        
-        let nav = UINavigationController(rootViewController: calendarVC)
-        nav.modalPresentationStyle = .pageSheet
-        if let sheet = nav.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
-            sheet.prefersGrabberVisible = true
-            sheet.preferredCornerRadius = Constants.cornerRadius
-        }
-        
-        rootVC.present(nav, animated: true)
-    }
-    
     private func updateDisplayText() {
         guard let date = selectedDate else {
             dateLabel.text = "Выберите дату"
@@ -302,4 +284,35 @@ extension DateRangePickerView: CalendarPickerViewControllerDelegate {
             }
         }
     }
+}
+
+
+extension DateRangePickerView {
+#if UITESTING
+    @objc private func showCalendarPicker() {
+        self.selectedDate = Date()
+        self.onDateSelected?(Date())
+        
+        self.updateDisplayText()
+        self.updateVisualState()
+    }
+#else
+    @objc private func showCalendarPicker() {
+        guard let rootVC = UIApplication.shared.windows.first?.rootViewController else { return }
+        
+        let calendarVC = CalendarPickerViewController()
+        calendarVC.initialDate = selectedDate ?? Date()
+        calendarVC.delegate = self
+        
+        let nav = UINavigationController(rootViewController: calendarVC)
+        nav.modalPresentationStyle = .pageSheet
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = Constants.cornerRadius
+        }
+        
+        rootVC.present(nav, animated: true)
+    }
+#endif
 }

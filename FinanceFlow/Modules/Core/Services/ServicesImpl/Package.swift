@@ -17,6 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "/Users/pavelkalinin/Desktop/FinanceFlow/FinanceFlow/Modules/Core/Services/ServicesAPI"),
+        .package(path: "/Users/pavelkalinin/Desktop/FinanceFlow/FinanceFlow/Modules/Core/FirebaseServices/FirebaseServicesAPI"),
         .package(path: "/Users/pavelkalinin/Desktop/FinanceFlow/FinanceFlow/Modules/Core/Storage/StorageAPI"),
         .package(path: "/Users/pavelkalinin/Desktop/FinanceFlow/FinanceFlow/Modules/Core/Domain/Domain"),
         .package(url: "https://github.com/kashapalinin/CurrencyFormatter.git", from: "1.1.4")
@@ -26,11 +27,11 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "ServicesImpl",
-            dependencies: ["ServicesAPI", "StorageAPI", "CurrencyFormatter", "Domain"]
+            dependencies: ["ServicesAPI", "StorageAPI", "CurrencyFormatter", "Domain", "FirebaseServicesAPI"]
         ),
         .testTarget(
             name: "ServicesImplTests",
-            dependencies: ["ServicesImpl"]
+            dependencies: ["ServicesImpl", "ServicesAPI", "StorageAPI", "CurrencyFormatter", "Domain", "FirebaseServicesAPI"]
         ),
     ]
 )

@@ -7,6 +7,7 @@
 import UIKit
 import Swinject
 import ServicesAPI
+import CrashlyticsAPI
 
 final class TransactionAssembly {
     func assemble(
@@ -17,7 +18,8 @@ final class TransactionAssembly {
         let vc = TransactionViewController()
         let presenter = TransactionPresenter(
             financeService: resolver.resolve(IFinanceService.self)!,
-            settingsService: resolver.resolve(ISettingsService.self)!
+            settingsService: resolver.resolve(ISettingsService.self)!,
+            crashlytics: resolver.resolve(IAppCrashlytics.self)!
         )
         vc.presenter = presenter
         presenter.coordinator = coordinator
