@@ -5,17 +5,13 @@
 //  Created by Павел Калинин on 10.01.2026.
 //
 
-// Swift Compiler Flags
 OTHER_SWIFT_FLAGS = $(inherited) -D RELEASE
 
-// Optimization
 SWIFT_OPTIMIZATION_LEVEL = -O
 GCC_OPTIMIZATION_LEVEL = 3
 
-// Debug Information
 DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
 
-// Strip Debug Symbols
 STRIP_INSTALLED_PRODUCT = YES
 DEPLOYMENT_POSTPROCESSING = YES
 COPY_PHASE_STRIP = YES
